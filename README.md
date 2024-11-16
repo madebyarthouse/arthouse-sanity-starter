@@ -1,15 +1,18 @@
-# Arthouse full-stack Starter Kit
+# Arthouse full-stack Sanity Starter Kit
 
 ![Arthouse Starter Kit screenshot](./docs/screenshot.png)
-Starter Kit for full-stack Typescript+React web dev projects. Has sensible defaults, clears out boilerplate and adds minimal utilities on top.
+Starter Kit for full-stack Typescript+React+Sanity web dev projects. Has sensible defaults, clears out boilerplate, setups up Sanity, and adds minimal utilities on top.
 
 Includes a `.cursorrules` file to get you started with Cursor – adapt it to your needs/style.
+
+Many parts are taken from [Simeon Griggs](https://github.com/SimeonGriggs)'s great [sanity-remix-template](https://github.com/SimeonGriggs/sanity-remix-template).
 
 Made by [Christian Cito](https://chrcit.com?utm_source=arthouse-starter-kit&utm_medium=github) /
 [Arthouse](https://madebyarthouse.com?utm_source=arthouse-starter-kit&utm_medium=github)
 
 ## Stack
 
+- Sanity
 - TypeScript
 - React
 - Remix w/ Vite

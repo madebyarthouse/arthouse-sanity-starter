@@ -1,19 +1,33 @@
-import * as React from "react";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
 import { config } from "./config";
 
-export const links: LinksFunction = () => [];
+export const links: LinksFunction = () => [
+  { rel: "preconnect", href: "https://cdn.sanity.io" },
+];
+
+export const loader = async () => {
+  return {
+    ENV: {
+      VITE_SANITY_PROJECT_ID: import.meta.env.VITE_SANITY_PROJECT_ID!,
+      VITE_SANITY_DATASET: import.meta.env.VITE_SANITY_DATASET!,
+      VITE_SANITY_API_VERSION: import.meta.env.VITE_SANITY_API_VERSION!,
+    },
+  };
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { ENV } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -74,6 +88,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
