@@ -8,6 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { config } from "./config";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -31,6 +32,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {/* Plausible Analytics Script */}
+        <script
+          defer
+          data-api="/api/event"
+          src="/js/script"
+          data-domain={config.productionDomain}
+        />
       </head>
       <body>
         {children}

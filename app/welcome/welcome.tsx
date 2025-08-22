@@ -1,7 +1,16 @@
 import logoDark from "./logo-dark.svg";
 import logoLight from "./logo-light.svg";
+import { trackEvent } from "../lib/plausible";
 
 export function Welcome() {
+  const handleLinkClick = (href: string, text: string) => {
+    trackEvent('External Link Click', {
+      url: href,
+      link_text: text,
+      section: 'welcome_page'
+    });
+  };
+
   return (
     <main className="flex items-center justify-center pt-16 pb-4">
       <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
@@ -32,6 +41,7 @@ export function Welcome() {
                     href={href}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => handleLinkClick(href, text)}
                   >
                     {icon}
                     {text}

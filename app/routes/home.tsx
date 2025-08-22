@@ -1,5 +1,6 @@
 import type { Route } from "./+types/home";
 import { Welcome } from "../welcome/welcome";
+import { trackEvent } from "../lib/plausible";
 
 export function meta({}: Route.MetaArgs) {
   return [
