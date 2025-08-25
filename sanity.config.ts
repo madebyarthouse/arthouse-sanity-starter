@@ -10,10 +10,21 @@ export default defineConfig({
   dataset: process.env.SANITY_STUDIO_DATASET || process.env.SANITY_DATASET!,
   apiVersion: process.env.SANITY_STUDIO_API_VERSION || process.env.SANITY_API_VERSION || '2024-02-13',
 
-
   plugins: [structureTool(), visionTool()],
 
   schema: {
     types: schemaTypes,
   },
+
+  typegen: {
+    // Look for GROQ queries in the app directory
+    targets: [
+      {
+        name: 'types',
+        path: './app/types/sanity.ts',
+        schema: './schemaTypes/index.ts',
+        queries: ['./app/**/*.{ts,tsx}']
+      }
+    ]
+  }
 })
