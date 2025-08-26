@@ -133,6 +133,10 @@ pnpm run sanity:deploy
 - [Sanity Documentation](https://www.sanity.io/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
+## ✅ Todo
+
+- [ ] Review and proofread Claude code and Cursor rules configuration files
+
 ## 📝 License
 
 This project is licensed under the MIT License.
