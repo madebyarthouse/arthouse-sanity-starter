@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_SANITY_DATASET: string;
   readonly VITE_SANITY_API_VERSION: string;
   readonly VITE_SANITY_STUDIO_URL: string;
+  readonly SANITY_SESSION_SECRET: string;
 }
 
 interface ImportMeta {

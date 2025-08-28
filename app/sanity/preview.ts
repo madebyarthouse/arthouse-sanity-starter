@@ -2,6 +2,10 @@ import { createCookieSessionStorage } from 'react-router';
 import type { loadQuery } from '~/sanity/loader.server';
 import crypto from 'node:crypto';
 
+if (!process.env.SANITY_SESSION_SECRET) {
+  throw new Error(`Missing SANITY_SESSION_SECRET in .env`);
+}
+
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
@@ -9,7 +13,7 @@ const { getSession, commitSession, destroySession } =
       name: '__sanity_preview',
       path: '/',
       sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
-      secrets: [crypto.randomBytes(16).toString('hex')],
+      secrets: [process.env.SANITY_SESSION_SECRET],
       secure: process.env.NODE_ENV !== 'development',
     },
   });
