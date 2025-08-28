@@ -18,9 +18,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const { preview } = await previewContext(request.headers);
 
   const ENV = {
-    PUBLIC_SANITY_PROJECT_ID: process.env.PUBLIC_SANITY_PROJECT_ID,
-    PUBLIC_SANITY_DATASET: process.env.PUBLIC_SANITY_DATASET,
-    PUBLIC_SANITY_STUDIO_URL: process.env.PUBLIC_SANITY_STUDIO_URL,
+    VITE_SANITY_PROJECT_ID: process.env.VITE_SANITY_PROJECT_ID,
+    VITE_SANITY_DATASET: process.env.VITE_SANITY_DATASET,
+    VITE_SANITY_STUDIO_URL: process.env.VITE_SANITY_STUDIO_URL,
   };
 
   const config = getServerConfig();
@@ -42,18 +42,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useRouteLoaderData('root') as
-    | { preview: boolean; ENV: any; config: any }
-    | undefined;
-  const { preview, ENV, config } = data || {
-    preview: false,
-    ENV: {},
-    config: {
-      productionDomain: 'your-domain.com',
-      productionUrl: 'https://your-domain.com',
-      themeColor: '#000',
-    },
-  };
+  const data = useRouteLoaderData('root');
 
   return (
     <html lang="en">
@@ -76,11 +65,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        {preview && <SanityVisualEditing />}
+        {data?.preview && <SanityVisualEditing />}
         {/* dangerouslySetInnerHTML coming from guide https://www.sanity.io/docs/visual-editing/visual-editing-with-react-router */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+            __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
           }}
         />
       </body>

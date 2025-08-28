@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDirs": [".", "./.react-router/types"],
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -16,6 +17,6 @@
       "~/*": ["./app/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
   "exclude": ["node_modules"]
 }

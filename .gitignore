@@ -11,7 +11,7 @@
 
 # React Router v7 build output
 build/
-/.react-router/
+.react-router/
 
 # Vite build output and cache
 /dist
