@@ -44,6 +44,8 @@ export const links: Route.LinksFunction = () => [
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData('root');
 
+  console.log('data', data);
+
   return (
     <html lang="en">
       <head>

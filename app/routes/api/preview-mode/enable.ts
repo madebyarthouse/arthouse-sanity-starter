@@ -23,7 +23,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   }
 
   const session = await getSession(request.headers.get('Cookie'));
-  await session.set('projectId', process.env.PUBLIC_SANITY_PROJECT_ID);
+  await session.set('projectId', process.env.VITE_SANITY_PROJECT_ID);
 
   return redirect(redirectTo, {
     headers: {

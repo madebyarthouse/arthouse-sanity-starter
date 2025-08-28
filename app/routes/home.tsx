@@ -26,7 +26,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return data;
 }
 
-export function meta(): Route.MetaDescriptor[] {
+export function meta(): Route.MetaDescriptors {
   return [
     { title: 'Arthouse - Houses' },
     { name: 'description', content: 'Browse our collection of houses' },
