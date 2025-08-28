@@ -5,6 +5,11 @@ export async function action({ request }: Route.ActionArgs) {
     return new Response('Method not allowed', { status: 405 });
   }
 
+  // DISABLED FOR TESTING - Return success without sending to Plausible
+  console.log('Plausible analytics disabled - would have tracked event');
+  return new Response('OK', { status: 200 });
+
+  /* ORIGINAL PLAUSIBLE CODE - COMMENTED OUT FOR TESTING
   // Extract client IP for proper attribution
   const clientIp =
     request.headers.get('cf-connecting-ip') ||
@@ -38,4 +43,5 @@ export async function action({ request }: Route.ActionArgs) {
     console.error('Plausible event proxy error:', error);
     return new Response('Internal Server Error', { status: 500 });
   }
+  */
 }

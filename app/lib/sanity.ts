@@ -1,8 +1,23 @@
 import { createClient } from '@sanity/client';
 
+declare global {
+  interface Window {
+    ENV: {
+      PUBLIC_SANITY_PROJECT_ID: string;
+      PUBLIC_SANITY_DATASET: string;
+      PUBLIC_SANITY_STUDIO_URL: string;
+    };
+  }
+}
+
+const env = typeof document === "undefined" ? process.env : window.ENV;
+
 export const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || process.env.SANITY_STUDIO_PROJECT_ID!,
-  dataset: process.env.SANITY_DATASET || process.env.SANITY_STUDIO_DATASET!,
-  apiVersion: process.env.SANITY_API_VERSION || process.env.SANITY_STUDIO_API_VERSION || '2024-02-13',
-  useCdn: process.env.NODE_ENV === 'production', // Use CDN for production, fresh data for development
+  projectId: env.PUBLIC_SANITY_PROJECT_ID || "rmappea8",
+  dataset: env.PUBLIC_SANITY_DATASET || "production",
+  apiVersion: "2024-12-01",
+  useCdn: true,
+  stega: {
+    studioUrl: env.PUBLIC_SANITY_STUDIO_URL,
+  },
 });

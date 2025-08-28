@@ -13,6 +13,17 @@
  */
 
 // Source: schema.json
+export type House = {
+  _id: string;
+  _type: 'house';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  address?: string;
+  bedrooms?: number;
+};
+
 export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch';
   background?: string;
@@ -132,6 +143,7 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
+  | House
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions

@@ -13,15 +13,38 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/house/:id": {
+    params: {
+      "id": string;
+    };
+  };
+  "/api/preview-mode/enable": {
+    params: {};
+  };
+  "/api/preview-mode/disable": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/";
+    page: "/" | "/house/:id" | "/api/preview-mode/enable" | "/api/preview-mode/disable";
   };
   "routes/home.tsx": {
     id: "routes/home";
     page: "/";
+  };
+  "routes/house.$id.tsx": {
+    id: "routes/house.$id";
+    page: "/house/:id";
+  };
+  "routes/api/preview-mode/enable.ts": {
+    id: "routes/api/preview-mode/enable";
+    page: "/api/preview-mode/enable";
+  };
+  "routes/api/preview-mode/disable.ts": {
+    id: "routes/api/preview-mode/disable";
+    page: "/api/preview-mode/disable";
   };
 };

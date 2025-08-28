@@ -5,11 +5,28 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { config } from "./config";
+import { getServerConfig } from "./config";
+import { SanityVisualEditing } from "./components/SanityVisualEditing";
+import { previewContext } from "./sanity/preview";
 import "./app.css";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const { preview } = await previewContext(request.headers);
+
+  const ENV = {
+    PUBLIC_SANITY_PROJECT_ID: process.env.PUBLIC_SANITY_PROJECT_ID,
+    PUBLIC_SANITY_DATASET: process.env.PUBLIC_SANITY_DATASET,
+    PUBLIC_SANITY_STUDIO_URL: process.env.PUBLIC_SANITY_STUDIO_URL,
+  };
+
+  const config = getServerConfig();
+
+  return { preview, ENV, config };
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,6 +42,13 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useRouteLoaderData("root") as { preview: boolean; ENV: any; config: any } | undefined;
+  const { preview, ENV, config } = data || { 
+    preview: false, 
+    ENV: {},
+    config: { productionDomain: "your-domain.com", productionUrl: "https://your-domain.com", themeColor: "#000" }
+  };
+
   return (
     <html lang="en">
       <head>
@@ -32,18 +56,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Plausible Analytics Script */}
+        {/* Plausible Analytics Script - DISABLED FOR TESTING */}
+        {/* 
         <script
           defer
           data-api="/api/event"
           src="/js/script"
           data-domain={config.productionDomain}
         />
+        */}
       </head>
       <body>
         {children}
         <ScrollRestoration />
         <Scripts />
+        {preview && <SanityVisualEditing />}
+        {/* dangerouslySetInnerHTML coming from guide https://www.sanity.io/docs/visual-editing/visual-editing-with-react-router */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+          }}
+        />
       </body>
     </html>
   );
