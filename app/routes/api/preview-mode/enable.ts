@@ -1,33 +1,33 @@
-import { redirect } from "react-router";
-import { validatePreviewUrl } from "@sanity/preview-url-secret";
-import { client } from "~/lib/sanity";
-import { commitSession, getSession } from "~/sanity/preview";
-import type { Route } from "./+types/enable";
+import { redirect } from 'react-router';
+import { validatePreviewUrl } from '@sanity/preview-url-secret';
+import { client } from '~/lib/sanity';
+import { commitSession, getSession } from '~/sanity/preview';
+import type { Route } from './+types/enable';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  if (!process.env.SANITY_VIEWER_TOKEN) {
-    throw new Response("Preview mode missing token", { status: 401 });
+  if (!process.env.SANITY_READ_TOKEN) {
+    throw new Response('Preview mode missing token', { status: 401 });
   }
 
   const clientWithToken = client.withConfig({
-    token: process.env.SANITY_VIEWER_TOKEN,
+    token: process.env.SANITY_READ_TOKEN,
   });
 
-  const { isValid, redirectTo = "/" } = await validatePreviewUrl(
+  const { isValid, redirectTo = '/' } = await validatePreviewUrl(
     clientWithToken,
     request.url
   );
 
   if (!isValid) {
-    throw new Response("Invalid secret", { status: 401 });
+    throw new Response('Invalid secret', { status: 401 });
   }
 
-  const session = await getSession(request.headers.get("Cookie"));
-  await session.set("projectId", process.env.PUBLIC_SANITY_PROJECT_ID);
+  const session = await getSession(request.headers.get('Cookie'));
+  await session.set('projectId', process.env.PUBLIC_SANITY_PROJECT_ID);
 
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      'Set-Cookie': await commitSession(session),
     },
   });
 };

@@ -1,3 +1,3 @@
-import {house} from './house'
+import { house } from './house';
 
-export const schemaTypes = [house]
+export const schemaTypes = [house];

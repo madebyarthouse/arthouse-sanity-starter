@@ -3,27 +3,23 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './app/sanity/schema';
+import { projectId, dataset, apiVersion } from './app/sanity/project-details';
 
 export default defineConfig({
+  projectId: projectId!,
+  dataset: dataset!,
+  apiVersion,
   name: 'default',
   title: 'arthouse-sanity-starter',
-  projectId:
-    import.meta.env.SANITY_STUDIO_PROJECT_ID ||
-    process.env.SANITY_STUDIO_PROJECT_ID!,
-  dataset:
-    import.meta.env.SANITY_STUDIO_DATASET || process.env.SANITY_STUDIO_DATASET!,
-  apiVersion:
-    import.meta.env.SANITY_STUDIO_API_VERSION ||
-    process.env.SANITY_STUDIO_API_VERSION ||
-    '2024-02-13',
-
+  basePath: '/studio',
   plugins: [
     structureTool(),
     visionTool(),
     presentationTool({
       previewUrl: {
         origin:
-          process.env.SANITY_STUDIO_PREVIEW_ORIGIN || 'http://localhost:5174',
+          import.meta.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ||
+          'http://localhost:5173',
         preview: '/',
         previewMode: {
           enable: '/api/preview-mode/enable',

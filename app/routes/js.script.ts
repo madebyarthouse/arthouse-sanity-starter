@@ -1,4 +1,4 @@
-import type { Route } from "./+types/js.script";
+import type { Route } from './+types/js.script';
 
 export async function loader({ request }: Route.LoaderArgs) {
   // DISABLED FOR TESTING - Return empty script instead of fetching from Plausible
@@ -8,7 +8,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       'Cache-Control': 'public, max-age=86400', // Cache for 1 day
     },
   });
-  
+
   /* ORIGINAL PLAUSIBLE CODE - COMMENTED OUT FOR TESTING
   try {
     const response = await fetch(

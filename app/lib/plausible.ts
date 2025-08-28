@@ -1,4 +1,4 @@
-import { getServerConfig } from "../config";
+import { getServerConfig } from '../config';
 
 export const trackPlausibleEvent = async ({
   event,
@@ -24,8 +24,8 @@ export const trackPlausibleEvent = async ({
     },
   });
 
-  console.log("Plausible analytics disabled - would have tracked event:", body);
-  
+  console.log('Plausible analytics disabled - would have tracked event:', body);
+
   // Return a mock successful response
   return new Response('OK', { status: 200 });
 
@@ -45,8 +45,12 @@ export const trackPlausibleEvent = async ({
 // Client-side event tracking helper
 export const trackEvent = (eventName: string, props?: Record<string, any>) => {
   // DISABLED FOR TESTING - Just log the event instead of tracking
-  console.log('Plausible analytics disabled - would have tracked client event:', eventName, props);
-  
+  console.log(
+    'Plausible analytics disabled - would have tracked client event:',
+    eventName,
+    props
+  );
+
   /* ORIGINAL PLAUSIBLE CODE - COMMENTED OUT FOR TESTING
   if (typeof window !== 'undefined' && (window as any).plausible) {
     (window as any).plausible(eventName, { props });

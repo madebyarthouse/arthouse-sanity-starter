@@ -1,4 +1,4 @@
-import type { Route } from "./+types/api.event";
+import type { Route } from './+types/api.event';
 
 export async function action({ request }: Route.ActionArgs) {
   if (request.method !== 'POST') {

@@ -1,22 +1,24 @@
 /// <reference types="vite/client" />
 
-interface ViteTypeOptions {
-    // By adding this line, you can make the type of ImportMetaEnv strict
-    // to disallow unknown keys.
-    // strictImportMetaEnv: unknown
+interface ImportMetaEnv {
+  readonly VITE_SANITY_PROJECT_ID: string;
+  readonly VITE_SANITY_DATASET: string;
+  readonly VITE_SANITY_API_VERSION: string;
+  readonly VITE_SANITY_STUDIO_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+// Extend Window interface to include ENV for server-side rendering
+declare global {
+  interface Window {
+    ENV: {
+      VITE_SANITY_PROJECT_ID: string;
+      VITE_SANITY_DATASET: string;
+      VITE_SANITY_API_VERSION: string;
+      VITE_SANITY_STUDIO_URL: string;
+    };
   }
-  
-  interface ImportMetaEnv {
-    readonly SANITY_STUDIO_PROJECT_ID: string
-    readonly SANITY_STUDIO_DATASET: string
-    readonly SANITY_STUDIO_API_VERSION: string
-    readonly SANITY_STUDIO_PREVIEW_ORIGIN: string
-    readonly SANITY_STUDIO_PREVIEW_URL: string
-    readonly SANITY_STUDIO_PREVIEW_SECRET: string
-    readonly SANITY_STUDIO_PREVIEW_TOKEN: string
-    readonly SANITY_STUDIO_PREVIEW_SECRET: string
-  }
-  
-  interface ImportMeta {
-    readonly env: ImportMetaEnv
-  }
+}

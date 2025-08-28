@@ -18,36 +18,40 @@ A modern React Router v7 application with TypeScript, Tailwind CSS, and Sanity C
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (recommended) or npm
 
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <your-repo-url>
    cd arthouse-sanity-starter-react
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Set up environment variables:
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Update the `.env` file with your Sanity project details:
    - `SANITY_PROJECT_ID` - Your Sanity project ID
    - `SANITY_DATASET` - Your Sanity dataset (e.g., 'production', 'development')
 
 4. Start the development servers:
+
    ```bash
    # Start React Router app (http://localhost:5173)
    pnpm run dev
-   
+
    # Start Sanity Studio (http://localhost:3333)
    pnpm run sanity:dev
    ```
@@ -55,12 +59,14 @@ A modern React Router v7 application with TypeScript, Tailwind CSS, and Sanity C
 ## 🛠 Available Scripts
 
 ### React Router
+
 - `pnpm run dev` - Start development server
 - `pnpm run build` - Build for production
 - `pnpm run start` - Start production server
 - `pnpm run typecheck` - Run TypeScript type checking
 
 ### Sanity CMS
+
 - `pnpm run sanity:dev` - Start Sanity Studio development server
 - `pnpm run sanity:build` - Build Sanity Studio for production
 - `pnpm run sanity:deploy` - Deploy Sanity Studio

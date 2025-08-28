@@ -24,12 +24,15 @@ type Pages = {
   "/api/preview-mode/disable": {
     params: {};
   };
+  "/studio": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/house/:id" | "/api/preview-mode/enable" | "/api/preview-mode/disable";
+    page: "/" | "/house/:id" | "/api/preview-mode/enable" | "/api/preview-mode/disable" | "/studio";
   };
   "routes/home.tsx": {
     id: "routes/home";
@@ -46,5 +49,9 @@ type RouteFiles = {
   "routes/api/preview-mode/disable.ts": {
     id: "routes/api/preview-mode/disable";
     page: "/api/preview-mode/disable";
+  };
+  "routes/studio.$.tsx": {
+    id: "routes/studio.$";
+    page: "/studio";
   };
 };

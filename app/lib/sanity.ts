@@ -1,23 +1,17 @@
 import { createClient } from '@sanity/client';
-
-declare global {
-  interface Window {
-    ENV: {
-      PUBLIC_SANITY_PROJECT_ID: string;
-      PUBLIC_SANITY_DATASET: string;
-      PUBLIC_SANITY_STUDIO_URL: string;
-    };
-  }
-}
-
-const env = typeof document === "undefined" ? process.env : window.ENV;
+import {
+  projectId,
+  dataset,
+  apiVersion,
+  studioUrl,
+} from '~/sanity/project-details';
 
 export const client = createClient({
-  projectId: env.PUBLIC_SANITY_PROJECT_ID || "rmappea8",
-  dataset: env.PUBLIC_SANITY_DATASET || "production",
-  apiVersion: "2024-12-01",
+  projectId: projectId,
+  dataset: dataset,
+  apiVersion: apiVersion,
   useCdn: true,
   stega: {
-    studioUrl: env.PUBLIC_SANITY_STUDIO_URL,
+    studioUrl: studioUrl,
   },
 });

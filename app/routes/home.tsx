@@ -1,9 +1,9 @@
-import type { Route } from "./+types/home";
-import { useQuery } from "@sanity/react-loader";
-import { Welcome } from "../welcome/welcome";
-import { loadQuery } from "../sanity/loader.server";
-import { previewContext } from "../sanity/preview";
-import { Link } from "react-router";
+import type { Route } from './+types/home';
+import { useQuery } from '@sanity/react-loader';
+import { Welcome } from '../welcome/welcome';
+import { loadQuery } from '../sanity/loader.server';
+import { previewContext } from '../sanity/preview';
+import { Link } from 'react-router';
 
 // Query to get all houses
 const query = `*[_type == "house"] | order(title asc){
@@ -28,48 +28,52 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export function meta(): Route.MetaDescriptor[] {
   return [
-    { title: "Arthouse - Houses" },
-    { name: "description", content: "Browse our collection of houses" },
+    { title: 'Arthouse - Houses' },
+    { name: 'description', content: 'Browse our collection of houses' },
   ];
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { data, encodeDataAttribute } = useQuery(query, {}, { initial: loaderData });
+  const { data, encodeDataAttribute } = useQuery(
+    query,
+    {},
+    { initial: loaderData }
+  );
   const houses = Array.isArray(data) ? data : [];
-  
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Welcome />
-      
+
       <div className="mt-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Houses</h1>
-        
+        <h1 className="mb-8 text-3xl font-bold text-gray-900">Houses</h1>
+
         {houses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {houses.map((house: House, index: number) => (
               <Link
                 key={house._id}
                 to={`/house/${house._id}`}
-                className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200"
+                className="block rounded-lg border border-gray-200 bg-white p-6 shadow-md transition-shadow duration-200 hover:shadow-lg"
                 data-sanity={encodeDataAttribute([index])}
               >
-                <h2 
-                  className="text-xl font-semibold text-gray-900 mb-2"
-                  data-sanity={encodeDataAttribute([index, "title"])}
+                <h2
+                  className="mb-2 text-xl font-semibold text-gray-900"
+                  data-sanity={encodeDataAttribute([index, 'title'])}
                 >
-                  {house.title || "Untitled House"}
+                  {house.title || 'Untitled House'}
                 </h2>
                 {house.address && (
-                  <p 
-                    className="text-gray-600 mb-3 line-clamp-2"
-                    data-sanity={encodeDataAttribute([index, "address"])}
+                  <p
+                    className="mb-3 line-clamp-2 text-gray-600"
+                    data-sanity={encodeDataAttribute([index, 'address'])}
                   >
                     {house.address}
                   </p>
                 )}
                 <div className="flex items-center text-sm text-gray-500">
                   <svg
-                    className="w-4 h-4 mr-1"
+                    className="mr-1 h-4 w-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -81,7 +85,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                       d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
                     />
                   </svg>
-                  <span data-sanity={encodeDataAttribute([index, "bedrooms"])}>
+                  <span data-sanity={encodeDataAttribute([index, 'bedrooms'])}>
                     {house.bedrooms || 0} bedrooms
                   </span>
                 </div>
@@ -89,9 +93,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No houses found.</p>
-            <p className="text-gray-400 text-sm mt-2">
+          <div className="py-12 text-center">
+            <p className="text-lg text-gray-500">No houses found.</p>
+            <p className="mt-2 text-sm text-gray-400">
               Add some houses in your Sanity Studio to see them here.
             </p>
           </div>

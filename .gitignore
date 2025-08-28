@@ -10,7 +10,7 @@
 .pnpm-store/
 
 # React Router v7 build output
-/build/
+build/
 /.react-router/
 
 # Vite build output and cache
