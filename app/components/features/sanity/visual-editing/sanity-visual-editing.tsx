@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { VisualEditing } from '@sanity/visual-editing/react-router';
-import { DisablePreviewMode } from './disable-preview-mode';
+import { DisablePreviewMode } from '@/components/features/sanity/visual-editing/disable-preview-mode';
 import { createClient } from '@sanity/client';
-import { useLiveMode } from '~/sanity/loader';
+import { useLiveMode } from '@/sanity/loader';
 
 type Env = {
   VITE_SANITY_PROJECT_ID?: string;

@@ -1,4 +1,4 @@
-import { cleanString } from './stega';
+import { cleanString } from '@/components/features/sanity/helpers/stega';
 
 type PageLike = {
   _id?: string | null;

@@ -22,7 +22,7 @@ import { SanityImage } from '~/components/sanity-image';
   alt="Description of image"
   width={800}
   sizes="(max-width: 768px) 100vw, 800px"
-/>
+/>;
 ```
 
 ### With Blur Placeholder
@@ -67,17 +67,17 @@ import { SanityImage } from '~/components/sanity-image';
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `image` | `SanityImageSource` | Required | Sanity image object |
-| `alt` | `string` | `''` | Alternative text for accessibility |
-| `width` | `number` | `800` | Target width for the main src |
-| `height` | `number` | - | Target height (optional) |
-| `sizes` | `string` | `'100vw'` | Responsive sizes attribute |
-| `className` | `string` | `''` | Additional CSS classes |
-| `priority` | `boolean` | `false` | Load eagerly (for above-fold images) |
-| `widths` | `number[]` | `[400, 800, 1200, 1600, 2000]` | Array of widths for srcset |
-| `showBlurPlaceholder` | `boolean` | `false` | Show LQIP blur placeholder |
+| Prop                  | Type                | Default                        | Description                          |
+| --------------------- | ------------------- | ------------------------------ | ------------------------------------ |
+| `image`               | `SanityImageSource` | Required                       | Sanity image object                  |
+| `alt`                 | `string`            | `''`                           | Alternative text for accessibility   |
+| `width`               | `number`            | `800`                          | Target width for the main src        |
+| `height`              | `number`            | -                              | Target height (optional)             |
+| `sizes`               | `string`            | `'100vw'`                      | Responsive sizes attribute           |
+| `className`           | `string`            | `''`                           | Additional CSS classes               |
+| `priority`            | `boolean`           | `false`                        | Load eagerly (for above-fold images) |
+| `widths`              | `number[]`          | `[400, 800, 1200, 1600, 2000]` | Array of widths for srcset           |
+| `showBlurPlaceholder` | `boolean`           | `false`                        | Show LQIP blur placeholder           |
 
 ## Sizes Attribute Examples
 
@@ -85,16 +85,16 @@ The `sizes` attribute tells the browser what size the image will be displayed at
 
 ```tsx
 // Full width on mobile, 50% on tablet, fixed 800px on desktop
-sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
+sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px';
 
 // Fixed size (like a logo)
-sizes="200px"
+sizes = '200px';
 
 // Full width always
-sizes="100vw"
+sizes = '100vw';
 
 // Sidebar image
-sizes="(max-width: 1024px) 100vw, 300px"
+sizes = '(max-width: 1024px) 100vw, 300px';
 ```
 
 ## Best Practices

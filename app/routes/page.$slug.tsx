@@ -1,12 +1,12 @@
 import type { Route } from './+types/page.$slug';
-import type { PAGE_QUERYResult } from '../../sanity.types';
-import { useQuery } from '~/sanity/loader';
+import type { PAGE_QUERYResult } from '@gen/sanity';
+import { useQuery } from '@/sanity/loader';
 import { stegaClean } from '@sanity/client/stega';
 import { Link, useParams } from 'react-router';
-import { loadQuery } from '../sanity/loader.server';
-import { previewContext } from '../sanity/preview';
-import { PAGE_QUERY } from '../sanity/queries';
-import { PageBuilder, RichText } from '~/ui/components';
+import { loadQuery } from '@/sanity/loader.server';
+import { previewContext } from '@/sanity/preview';
+import { PAGE_QUERY } from '@/sanity/queries';
+import { PageBuilder, RichText } from '@/components/features/sanity';
 
 function cleanVisibility(value: string | null | undefined) {
   return value ? stegaClean(value) : undefined;
@@ -56,31 +56,26 @@ export default function PageRoute({ loaderData }: Route.ComponentProps) {
 
   if (!page) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="mb-4 text-2xl font-bold text-gray-900">Not found</h1>
-          <Link to="/" className="text-blue-600 hover:text-blue-800">
-            ← Back home
-          </Link>
-        </div>
+      <div className="py-12 text-center">
+        <h1 className="mb-4 text-2xl font-bold">Not found</h1>
+        <Link to="/" className="text-brand underline-offset-4 hover:underline">
+          ← Back home
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <div className="mb-8">
-        <Link
-          to="/"
-          className="inline-flex items-center text-blue-600 transition-colors hover:text-blue-800"
-        >
+        <Link to="/" className="text-brand underline-offset-4 hover:underline">
           ← Back home
         </Link>
       </div>
 
-      <div className="rounded-lg bg-white p-8 shadow-lg">
+      <div className="border-border bg-background rounded-lg border p-8">
         <h1
-          className="mb-6 text-4xl font-bold text-gray-900"
+          className="mb-6 text-4xl font-bold"
           data-sanity={encodeDataAttribute(['title'])}
         >
           {page.title || 'Untitled'}

@@ -1,8 +1,8 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import type { SITEMAP_QUERYResult } from '../../sanity.types';
-import { getServerConfig } from '../config';
-import { loadQuery } from '../sanity/loader.server';
-import { SITEMAP_QUERY } from '../sanity/queries';
+import type { SITEMAP_QUERYResult } from '@gen/sanity';
+import { getServerConfig } from '@/config';
+import { loadQuery } from '@/sanity/loader.server';
+import { SITEMAP_QUERY } from '@/sanity/queries';
 
 function getBaseUrl(request: Request): string {
   if (process.env.PRODUCTION_URL) return getServerConfig().productionUrl;

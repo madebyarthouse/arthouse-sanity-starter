@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link, type LinkProps } from 'react-router';
-import { resolveHref } from '../../helpers/resolve-href';
-import type { MarkInternalLink } from '../../../../sanity.types';
+import { resolveHref } from '@/components/features/sanity/helpers/resolve-href';
+import type { MarkInternalLink } from '@gen/sanity';
 
 type DerefPage = {
   _id: string;

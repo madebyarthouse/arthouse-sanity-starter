@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from 'react-router';
-import type { loadQuery } from '~/sanity/loader.server';
+import type { loadQuery } from '@/sanity/loader.server';
 import crypto from 'node:crypto';
 
 if (!process.env.SANITY_SESSION_SECRET) {

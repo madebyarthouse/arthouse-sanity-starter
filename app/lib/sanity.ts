@@ -4,7 +4,7 @@ import {
   dataset,
   apiVersion,
   studioUrl,
-} from '~/sanity/project-details';
+} from '@/sanity/project-details';
 
 export const client = createClient({
   projectId: projectId,

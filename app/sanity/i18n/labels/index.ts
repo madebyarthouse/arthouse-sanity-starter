@@ -1,7 +1,7 @@
-import { studioLocale } from '../config';
-import type { StudioLabels } from './schema';
-import { en } from './en';
-import { de } from './de';
+import { studioLocale } from '@/sanity/i18n/config';
+import type { StudioLabels } from '@/sanity/i18n/labels/schema';
+import { en } from '@/sanity/i18n/labels/en';
+import { de } from '@/sanity/i18n/labels/de';
 
 const locales: Record<string, StudioLabels> = {
   en,
@@ -21,6 +21,6 @@ export type {
   ObjectLabels,
   CommonLabels,
   ValidationLabels,
-} from './schema';
-export { en } from './en';
-export { de } from './de';
+} from '@/sanity/i18n/labels/schema';
+export { en } from '@/sanity/i18n/labels/en';
+export { de } from '@/sanity/i18n/labels/de';

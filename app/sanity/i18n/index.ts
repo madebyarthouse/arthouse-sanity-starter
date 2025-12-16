@@ -1,4 +1,4 @@
 // Re-export everything for easy imports
-export { labels } from './labels';
-export type { StudioLabels } from './labels/schema';
-export { studioLocale, type SupportedLocale } from './config';
+export { labels } from '@/sanity/i18n/labels';
+export type { StudioLabels } from '@/sanity/i18n/labels/schema';
+export { studioLocale, type SupportedLocale } from '@/sanity/i18n/config';

@@ -1,5 +1,5 @@
-import { client } from '~/lib/sanity';
-import { setServerClient, loadQuery } from './loader';
+import { client } from '@/lib/sanity';
+import { setServerClient, loadQuery } from '@/sanity/loader';
 
 const token =
   process.env.SANITY_API_READ_TOKEN ??

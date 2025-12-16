@@ -9,8 +9,8 @@ import {
 } from 'react-router';
 
 import type { Route } from './+types/root';
-import { getServerConfig } from './config';
-import { previewContext } from './sanity/preview';
+import { getServerConfig } from '@/config';
+import { previewContext } from '@/sanity/preview';
 import './app.css';
 
 export async function loader({ request }: Route.LoaderArgs) {

@@ -1,4 +1,4 @@
-import { getServerConfig } from '../config';
+import { getServerConfig } from '@/config';
 
 export const trackPlausibleEvent = async ({
   event,

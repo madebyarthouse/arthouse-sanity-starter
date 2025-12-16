@@ -1,6 +1,7 @@
-import type { FOOTER_QUERYResult } from '../../sanity.types';
+import type { FOOTER_QUERYResult } from '@gen/sanity';
 import { Link } from 'react-router';
-import { ComplexImage, NavLink } from '~/ui/components';
+import { ComplexImage, NavLink } from '@/components/features/sanity';
+import { Container } from '@/components/ui';
 
 interface FooterProps {
   footer: FOOTER_QUERYResult | null;
@@ -12,8 +13,8 @@ export function Footer({ footer }: FooterProps) {
   }
 
   return (
-    <footer className="border-t border-gray-200 bg-gray-50">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="border-border bg-muted border-t">
+      <Container className="py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
             {footer.logo ? (
@@ -31,7 +32,7 @@ export function Footer({ footer }: FooterProps) {
             ) : null}
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-gray-900">
+            <h3 className="text-foreground mb-4 text-sm font-semibold">
               Main Navigation
             </h3>
             <ul className="space-y-2">
@@ -39,27 +40,29 @@ export function Footer({ footer }: FooterProps) {
                 <li key={idx}>
                   <NavLink
                     link={item}
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-foreground/80 hover:text-foreground text-sm"
                   />
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-gray-900">Legal</h3>
+            <h3 className="text-foreground mb-4 text-sm font-semibold">
+              Legal
+            </h3>
             <ul className="space-y-2">
               {footer.secondaryNav?.map((item, idx) => (
                 <li key={idx}>
                   <NavLink
                     link={item}
-                    className="text-sm text-gray-600 hover:text-gray-900"
+                    className="text-foreground/80 hover:text-foreground text-sm"
                   />
                 </li>
               ))}
             </ul>
             {footer.socials && footer.socials.length > 0 && (
               <div className="mt-4">
-                <h4 className="mb-2 text-sm font-semibold text-gray-900">
+                <h4 className="text-foreground mb-2 text-sm font-semibold">
                   Follow Us
                 </h4>
                 <div className="flex space-x-4">
@@ -69,7 +72,7 @@ export function Footer({ footer }: FooterProps) {
                       href={social.url || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-600 hover:text-gray-900"
+                      className="text-foreground/80 hover:text-foreground text-sm"
                     >
                       {social.platform}
                     </a>
@@ -79,7 +82,7 @@ export function Footer({ footer }: FooterProps) {
             )}
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

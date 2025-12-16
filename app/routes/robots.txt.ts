@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { getServerConfig } from '../config';
+import { getServerConfig } from '@/config';
 
 function getBaseUrl(request: Request): string {
   if (process.env.PRODUCTION_URL) return getServerConfig().productionUrl;

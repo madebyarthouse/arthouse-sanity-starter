@@ -4,10 +4,19 @@ import type {
   HOMEPAGE_QUERYResult,
   PAGE_QUERYResult,
   RichText as RichTextSchema,
-} from '../../../../sanity.types';
-import { ComplexImage, type ComplexImageValue } from '../complex-image';
-import { ExternalLink, type ExternalLinkValue } from '../links/external-link';
-import { InternalLink, type InternalLinkValue } from '../links/internal-link';
+} from '@gen/sanity';
+import {
+  ComplexImage,
+  type ComplexImageValue,
+} from '@/components/features/sanity/complex-image';
+import {
+  ExternalLink,
+  type ExternalLinkValue,
+} from '@/components/features/sanity/links/external-link';
+import {
+  InternalLink,
+  type InternalLinkValue,
+} from '@/components/features/sanity/links/internal-link';
 
 type PageRichText = NonNullable<NonNullable<PAGE_QUERYResult>['richText']>;
 type HomepageRichText = NonNullable<

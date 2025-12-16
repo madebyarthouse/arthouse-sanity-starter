@@ -1,8 +1,8 @@
 import type {
   HOMEPAGE_QUERYResult,
   PAGE_QUERYResult,
-} from '../../../../sanity.types';
-import { RichText } from '../rich-text';
+} from '@gen/sanity';
+import { RichText } from '@/components/features/sanity/rich-text';
 
 type PageComponents = NonNullable<NonNullable<PAGE_QUERYResult>['components']>;
 type HomepageComponents = NonNullable<

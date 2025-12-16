@@ -37,4 +37,3 @@ export const mainDocuments = defineDocuments([
     filter: `_type == "page" && slug.current == $slug`,
   },
 ]);
-

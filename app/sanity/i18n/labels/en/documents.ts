@@ -1,4 +1,4 @@
-import type { DocumentLabels } from '../schema';
+import type { DocumentLabels } from '@/sanity/i18n/labels/schema';
 
 export const documents: DocumentLabels = {
   page: {

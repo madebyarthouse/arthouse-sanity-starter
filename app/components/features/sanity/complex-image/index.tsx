@@ -1,9 +1,9 @@
 import type { ImgHTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 import { useState } from 'react';
-import { generateSrcSet, urlFor } from '../../helpers/url-for';
+import { generateSrcSet, urlFor } from '@/components/features/sanity/helpers/url-for';
 import type { SanityImageSource } from '@sanity/image-url';
-import type { ComplexImage as ComplexImageSchema } from '../../../../sanity.types';
+import type { ComplexImage as ComplexImageSchema } from '@gen/sanity';
 
 type ComplexImageAsset = {
   crop?: unknown;

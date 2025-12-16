@@ -1,4 +1,4 @@
-import { complexImageStub } from './complex-image';
+import { complexImageStub } from '@/sanity/queries/stubs/complex-image';
 
 export const metaStub = `
   title,

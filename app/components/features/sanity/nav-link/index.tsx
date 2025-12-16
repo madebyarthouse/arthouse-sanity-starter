@@ -1,12 +1,12 @@
 import type { AnchorHTMLAttributes } from 'react';
 import { Link } from 'react-router';
-import { resolveHref } from '../../helpers/resolve-href';
-import { ExternalLink } from '../links/external-link';
+import { resolveHref } from '@/components/features/sanity/helpers/resolve-href';
+import { ExternalLink } from '@/components/features/sanity/links/external-link';
 
 import type {
   FOOTER_QUERYResult,
   HEADER_QUERYResult,
-} from '../../../../sanity.types';
+} from '@gen/sanity';
 
 type HeaderNavItem = NonNullable<
   NonNullable<HEADER_QUERYResult>['nav']

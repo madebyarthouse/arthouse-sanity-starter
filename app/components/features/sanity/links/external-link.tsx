@@ -1,5 +1,5 @@
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
-import type { MarkExternalLink } from '../../../../sanity.types';
+import type { MarkExternalLink } from '@gen/sanity';
 
 type ExternalLinkQueryShape = {
   type: 'url' | 'email' | 'phone' | 'file' | null;

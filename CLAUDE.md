@@ -10,12 +10,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - React app available at http://localhost:5173
   - Sanity Studio available at http://localhost:5173/studio
 - `pnpm run typecheck` - Run TypeScript type checking and React Router typegen
+  - Note: this script runs `sanity:types` (schema extract + typegen) first
 
 ### Build & Production
 
 - `pnpm run build` - Build React Router app for production (includes Sanity Studio)
 - `pnpm run start` - Start production server
 - `pnpm run rr:typegen` - Generate React Router types
+ - `pnpm run sanity:dev` - Run Sanity Studio dev server (standalone)
+ - `pnpm run sanity:types` - Regenerate `sanity.types.ts` from schema + GROQ queries
 
 ### Code Quality
 
@@ -39,7 +42,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `routes/` - Route components (home.tsx, house.$id.tsx, api endpoints)
     - `api/preview-mode/` - Preview mode enable/disable endpoints
     - `studio.$.tsx` - Embedded Sanity Studio route
-  - `components/` - Reusable React components (visual editing, hydration)
+  - `components/` - UI + feature components
+    - `components/ui/` - Generic UI primitives (e.g. `Container`)
+    - `components/features/layout/` - App chrome (`Header`, `Footer`)
+    - `components/features/sanity/` - Components that map to Sanity schema (PortableText, images, links, visual editing)
+    - `components/features/analytics/` - Analytics/consent feature (ART-365)
   - `lib/` - Utilities (Sanity client, Plausible analytics)
   - `sanity/` - Sanity integration
     - `schema/` - Sanity schema definitions (house.ts, index.ts)
@@ -50,6 +57,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `root.tsx` - Root layout with SSR and visual editing
 - `sanity.config.ts` - Sanity Studio configuration with embedded routing
 - `sanity.cli.ts` - Sanity CLI configuration
+
+### Import aliases (required)
+
+- Use `@/…` for anything under `app/` (preferred app-root alias).
+- Use `@gen/sanity` for the generated `sanity.types.ts` import (type-only).
+- Use `@root/…` for repo-root files when needed at runtime (e.g. `@root/sanity.config`).
+- **Exception**: keep React Router route type imports relative, e.g. `import type { Route } from './+types/foo'` (those are generated virtual modules).
 
 ### Sanity Integration
 
@@ -124,7 +138,8 @@ Required environment variables:
 1. Run `pnpm run dev` to start both React app and embedded Sanity Studio
    - React app: http://localhost:5173
    - Sanity Studio: http://localhost:5173/studio
-2. Use `pnpm run typecheck` after modifying Sanity schemas or routes
+2. After modifying Sanity schemas or GROQ queries, run `pnpm run typecheck` (regenerates `sanity.types.ts` and route types)
 3. Access preview mode via Studio's "Open preview" feature
-4. Follow `.cursor-rules.md` for consistent code style
-5. Package management uses pnpm exclusively
+4. Prefer Tailwind utility classes; keep global CSS limited to `app/app.css` tokens/base.
+5. Follow `.cursorrules` for consistent imports and structure
+6. Package management uses pnpm exclusively

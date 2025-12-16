@@ -1,5 +1,5 @@
 import { defineType } from 'sanity';
-import { labels } from '../../i18n';
+import { labels } from '@/sanity/i18n';
 
 const l = labels.objects.separator;
 

@@ -1,6 +1,7 @@
-import type { HEADER_QUERYResult } from '../../sanity.types';
+import type { HEADER_QUERYResult } from '@gen/sanity';
 import { Link } from 'react-router';
-import { ComplexImage, NavLink } from '~/ui/components';
+import { ComplexImage, NavLink } from '@/components/features/sanity';
+import { Container } from '@/components/ui';
 
 interface HeaderProps {
   header: HEADER_QUERYResult | null;
@@ -12,9 +13,9 @@ export function Header({ header }: HeaderProps) {
   }
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="container mx-auto flex items-center justify-between px-4 py-6">
-        <div className="flex items-center space-x-8">
+    <header className="border-border bg-background border-b">
+      <Container className="flex items-center justify-between py-6">
+        <div className="flex items-center gap-8">
           {header.logo ? (
             <Link to="/" className="block">
               <ComplexImage
@@ -34,12 +35,12 @@ export function Header({ header }: HeaderProps) {
               <NavLink
                 key={idx}
                 link={item}
-                className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                className="text-foreground/80 hover:text-foreground text-sm font-medium transition-colors"
               />
             ))}
           </nav>
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

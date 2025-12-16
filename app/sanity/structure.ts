@@ -8,7 +8,7 @@ import {
   MenuIcon,
   StackCompactIcon,
 } from '@sanity/icons';
-import { labels } from './i18n';
+import { labels } from '@/sanity/i18n';
 
 const l = labels.documents;
 const s = labels.structure;

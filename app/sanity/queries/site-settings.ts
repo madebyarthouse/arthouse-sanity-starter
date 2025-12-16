@@ -1,5 +1,5 @@
 import groq, { defineQuery } from 'groq';
-import { complexImageStub } from './stubs/complex-image';
+import { complexImageStub } from '@/sanity/queries/stubs/complex-image';
 
 export const SITE_SETTINGS_QUERY = defineQuery(groq`
   *[_type == "siteSettings"][0]{

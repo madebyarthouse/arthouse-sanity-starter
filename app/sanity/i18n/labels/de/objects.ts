@@ -1,4 +1,4 @@
-import type { ObjectLabels } from '../schema';
+import type { ObjectLabels } from '@/sanity/i18n/labels/schema';
 
 export const objects: ObjectLabels = {
   meta: {

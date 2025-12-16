@@ -1,11 +1,11 @@
 import type { Route } from './+types/index';
-import type { HOMEPAGE_QUERYResult } from '../../sanity.types';
-import { useQuery } from '~/sanity/loader';
+import type { HOMEPAGE_QUERYResult } from '@gen/sanity';
+import { useQuery } from '@/sanity/loader';
 import { stegaClean } from '@sanity/client/stega';
-import { loadQuery } from '../sanity/loader.server';
-import { previewContext } from '../sanity/preview';
-import { HOMEPAGE_QUERY } from '../sanity/queries';
-import { PageBuilder, RichText } from '~/ui/components';
+import { loadQuery } from '@/sanity/loader.server';
+import { previewContext } from '@/sanity/preview';
+import { HOMEPAGE_QUERY } from '@/sanity/queries';
+import { PageBuilder, RichText } from '@/components/features/sanity';
 
 function cleanVisibility(value: string | null | undefined) {
   return value ? stegaClean(value) : undefined;
@@ -52,39 +52,39 @@ export default function Index({ loaderData }: Route.ComponentProps) {
       { initial: loaderData.data }
     );
 
-  const contentMode = homepage?.contentMode ? stegaClean(homepage.contentMode) : null;
+  const contentMode = homepage?.contentMode
+    ? stegaClean(homepage.contentMode)
+    : null;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mt-12">
-        <h1
-          className="mb-8 text-3xl font-bold text-gray-900"
-          data-sanity={encodeDataAttribute(['title'])}
-        >
-          {homepage?.title || 'Homepage'}
-        </h1>
+    <div className="mt-12">
+      <h1
+        className="mb-8 text-3xl font-bold"
+        data-sanity={encodeDataAttribute(['title'])}
+      >
+        {homepage?.title || 'Homepage'}
+      </h1>
 
-        {!homepage ? (
-          <div className="py-12 text-center">
-            <p className="text-lg text-gray-500">No homepage content found.</p>
-            <p className="mt-2 text-sm text-gray-400">
-              Create the homepage in Sanity Studio (page with ID "homepage").
-            </p>
-          </div>
-        ) : (
-          <div className="prose max-w-none">
-            {contentMode === 'pageBuilder' ? (
-              <div data-sanity={encodeDataAttribute(['components'])}>
-                <PageBuilder value={homepage.components} />
-              </div>
-            ) : (
-              <div data-sanity={encodeDataAttribute(['richText'])}>
-                <RichText value={homepage.richText} />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      {!homepage ? (
+        <div className="text-foreground/70 py-12 text-center">
+          <p className="text-lg">No homepage content found.</p>
+          <p className="mt-2 text-sm">
+            Create the homepage in Sanity Studio (page with ID "homepage").
+          </p>
+        </div>
+      ) : (
+        <div className="prose max-w-none">
+          {contentMode === 'pageBuilder' ? (
+            <div data-sanity={encodeDataAttribute(['components'])}>
+              <PageBuilder value={homepage.components} />
+            </div>
+          ) : (
+            <div data-sanity={encodeDataAttribute(['richText'])}>
+              <RichText value={homepage.richText} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

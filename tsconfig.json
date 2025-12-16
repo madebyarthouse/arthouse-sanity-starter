@@ -14,7 +14,10 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "@/*": ["./app/*"],
+      "@gen/sanity": ["./sanity.types.ts"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],

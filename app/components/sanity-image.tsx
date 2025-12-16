@@ -1,5 +1,5 @@
 import type { SanityImageSource } from '@sanity/image-url';
-import { urlFor, generateSrcSet } from '../lib/sanity-image';
+import { urlFor, generateSrcSet } from '@/lib/sanity-image';
 import { useState } from 'react';
 
 type SanityImageSourceWithLqip = SanityImageSource & {

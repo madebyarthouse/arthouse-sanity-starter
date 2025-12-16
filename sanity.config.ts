@@ -6,6 +6,7 @@ import { schemaTypes } from './app/sanity/schema/index';
 import { structure } from './app/sanity/structure';
 import { projectId, dataset, apiVersion } from './app/sanity/project-details';
 import { locations, mainDocuments } from './app/sanity/presentation/resolve';
+import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
 
 // Helper to get preview origin in both browser and Node.js environments
 const getPreviewOrigin = () => {
@@ -26,6 +27,8 @@ export default defineConfig({
   apiVersion,
   name: 'default',
   title: 'arthouse-sanity-starter',
+  icon: StudioLogo,
+  theme: studioTheme,
   basePath: '/studio',
   plugins: [
     structureTool({ structure }),
