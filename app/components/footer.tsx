@@ -6,27 +6,6 @@ interface FooterProps {
 }
 
 export function Footer({ footer }: FooterProps) {
-  // #region agent log
-  fetch('http://127.0.0.1:7244/ingest/378cb7be-f32c-4b06-9644-920756e4aab0', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'footer.tsx:9',
-      message: 'Footer component entry',
-      data: {
-        hasFooter: !!footer,
-        hasLogo: !!footer?.logo,
-        logoStructure: footer?.logo ? JSON.stringify(footer.logo) : null,
-        hasAsset: !!footer?.logo?.asset,
-      },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      runId: 'pre-fix',
-      hypothesisId: 'C,D',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   if (!footer) {
     return null;
   }
@@ -36,9 +15,9 @@ export function Footer({ footer }: FooterProps) {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            {footer.logo?.asset && (
+            {footer.logo?.asset?.asset && (
               <SanityImage
-                image={footer.logo as any}
+                image={footer.logo.asset}
                 alt={footer.logo.alt || 'Logo'}
                 width={150}
                 height={32}

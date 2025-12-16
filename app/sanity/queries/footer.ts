@@ -1,24 +1,11 @@
-import { defineQuery } from 'groq';
+import groq, { defineQuery } from 'groq';
+import { complexImageStub } from './stubs/complex-image';
 
-export const FOOTER_QUERY = defineQuery(`
+export const FOOTER_QUERY = defineQuery(groq`
   *[_type == "footer"][0]{
     _id,
     _type,
-    logo{
-      alt,
-      caption,
-      width,
-      crop,
-      hotspot,
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions{width, height, aspectRatio},
-          lqip
-        }
-      }
-    },
+    logo{${complexImageStub}},
     mainNav[]{
       type,
       title,

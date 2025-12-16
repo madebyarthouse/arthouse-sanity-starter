@@ -30,50 +30,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     ),
   ]);
 
-  // #region agent log
-  fetch('http://127.0.0.1:7244/ingest/378cb7be-f32c-4b06-9644-920756e4aab0', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'layout.tsx:loader:33',
-      message: 'Loaded header data',
-      data: {
-        headerData: JSON.stringify(headerData),
-        hasLogo: !!headerData?.data?.logo,
-        logoKeys: headerData?.data?.logo
-          ? Object.keys(headerData.data.logo)
-          : null,
-      },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      runId: 'pre-fix',
-      hypothesisId: 'C',
-    }),
-  }).catch(() => {});
-  // #endregion
-
-  // #region agent log
-  fetch('http://127.0.0.1:7244/ingest/378cb7be-f32c-4b06-9644-920756e4aab0', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      location: 'layout.tsx:loader:36',
-      message: 'Loaded footer data',
-      data: {
-        footerData: JSON.stringify(footerData),
-        hasLogo: !!footerData?.data?.logo,
-        logoKeys: footerData?.data?.logo
-          ? Object.keys(footerData.data.logo)
-          : null,
-      },
-      timestamp: Date.now(),
-      sessionId: 'debug-session',
-      runId: 'pre-fix',
-      hypothesisId: 'C',
-    }),
-  }).catch(() => {});
-  // #endregion
-
   return {
     header: headerData,
     footer: footerData,

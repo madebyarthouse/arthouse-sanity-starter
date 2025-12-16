@@ -1,6 +1,7 @@
-import { defineQuery } from 'groq';
+import groq, { defineQuery } from 'groq';
+import { complexImageStub } from './stubs/complex-image';
 
-export const PAGE_QUERY = defineQuery(`
+export const PAGE_QUERY = defineQuery(groq`
   *[_type == "page" && slug.current == $slug][0]{
     _id,
     _type,
@@ -10,21 +11,7 @@ export const PAGE_QUERY = defineQuery(`
       title,
       description,
       keywords,
-      ogImage{
-        alt,
-        caption,
-        width,
-        crop,
-        hotspot,
-        asset->{
-          _id,
-          url,
-          metadata{
-            dimensions{width, height, aspectRatio},
-            lqip
-          }
-        }
-      },
+      ogImage{${complexImageStub}},
       visibility
     },
     contentMode,

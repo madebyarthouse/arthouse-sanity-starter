@@ -1,24 +1,11 @@
-import { defineQuery } from 'groq';
+import groq, { defineQuery } from 'groq';
+import { complexImageStub } from './stubs/complex-image';
 
-export const HEADER_QUERY = defineQuery(`
+export const HEADER_QUERY = defineQuery(groq`
   *[_type == "header"][0]{
     _id,
     _type,
-    logo{
-      alt,
-      caption,
-      width,
-      crop,
-      hotspot,
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions{width, height, aspectRatio},
-          lqip
-        }
-      }
-    },
+    logo{${complexImageStub}},
     nav[]{
       type,
       title,
