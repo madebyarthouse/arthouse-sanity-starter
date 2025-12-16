@@ -18,8 +18,8 @@
 
 ### Code touch points
 Create:
-- `app/routes/sitemap[.]xml.ts`
-- `app/routes/robots[.]txt.ts`
+- `app/routes/sitemap.xml.ts`
+- `app/routes/robots.txt.ts`
 
 Modify:
 - `app/sanity/queries/sitemap.ts` (or ensure it exists from ART-358)
@@ -36,22 +36,22 @@ Modify:
      - return `{ url, _updatedAt }` where `url` resolves to `/` for homepage and `/${slug}` for pages.
 
 2. **Route: `sitemap.xml`**
-   - Create `app/routes/sitemap[.]xml.ts` loader that:
+   - Create `app/routes/sitemap.xml.ts` loader that:
      - calls `loadQuery(SITEMAP_QUERY)`
      - builds XML
      - sets header `Content-Type: application/xml`
    - Use `SITE_URL` env var as base URL (fallback to placeholder in dev).
 
 3. **Route: `robots.txt`**
-   - Create `app/routes/robots[.]txt.ts` loader that:
+   - Create `app/routes/robots.txt.ts` loader that:
      - returns disallow rules for `/studio` and `/api/`
      - includes `Sitemap: ${SITE_URL}/sitemap.xml`
      - sets `Content-Type: text/plain`
 
 4. **Register routes in `app/routes.ts`**
    - Add route entries:
-     - `route('sitemap.xml', 'routes/sitemap[.]xml.ts')`
-     - `route('robots.txt', 'routes/robots[.]txt.ts')`
+     - `route('sitemap.xml', 'routes/sitemap.xml.ts')`
+     - `route('robots.txt', 'routes/robots.txt.ts')`
 
 5. **Enforce visibility in page loaders/meta**
    - In the `/:slug` page route loader:
@@ -74,8 +74,8 @@ Modify:
 - Ensure sitemap generation does not include drafts (use published perspective unless preview is explicitly required).
 
 ### Definition of done (mirrors ticket)
-- [ ] `sitemap[.]xml.ts` route
-- [ ] `robots[.]txt.ts` route
+- [ ] `sitemap.xml.ts` route
+- [ ] `robots.txt.ts` route
 - [ ] `SITEMAP_QUERY` in queries
 - [ ] Meta robots handling for `hidden`
 - [ ] 404 handling for `private` visibility

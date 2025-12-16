@@ -7,13 +7,21 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "rr:typegen": "react-router typegen",
+    "sanity:dev": "sanity dev",
+    "sanity:build": "sanity build",
+    "sanity:deploy": "sanity deploy",
+    "sanity:extract": "sanity schema extract --path ./app/sanity/schema.json",
+    "sanity:typegen": "sanity typegen generate",
+    "sanity:types": "pnpm sanity:extract && pnpm sanity:typegen",
     "format": "prettier --write .",
-    "typecheck": "react-router typegen && tsc --noEmit"
+    "typecheck": "pnpm sanity:types && pnpm rr:typegen && tsc --noEmit"
   },
   "dependencies": {
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
     "@sanity/client": "^7.9.0",
+    "@sanity/icons": "^3.7.4",
+    "@sanity/image-url": "^2.0.2",
     "@sanity/preview-url-secret": "^2.1.14",
     "@sanity/react-loader": "^1.11.18",
     "@sanity/vision": "^4.5.0",
@@ -26,8 +34,11 @@
     "pretty-cache-header": "^1.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-dropzone": "^14.3.8",
     "react-router": "^7.7.1",
     "sanity": "^4.5.0",
+    "sanity-plugin-asset-source-unsplash": "^7.0.0",
+    "sanity-plugin-media": "^4.1.0",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {

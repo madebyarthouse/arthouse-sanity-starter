@@ -1,0 +1,29 @@
+import groq, { defineQuery } from 'groq';
+import { complexImageStub } from './stubs/complex-image';
+
+export const SITE_SETTINGS_QUERY = defineQuery(groq`
+  *[_type == "siteSettings"][0]{
+    _id,
+    _type,
+    metaSettings{
+      siteTitle,
+      titleTemplate,
+      defaultDescription,
+      defaultKeywords,
+      defaultOgImage{${complexImageStub}}
+    },
+    favicon{
+      ...,
+      asset->{_id, url}
+    },
+    ogVisual{${complexImageStub}},
+    socials[]{platform, url},
+    privacyPolicy->{_id, _type, title, slug, meta{visibility}},
+    imprint->{_id, _type, title, slug, meta{visibility}},
+    analytics{
+      enabled,
+      provider,
+      domain
+    }
+  }
+`);

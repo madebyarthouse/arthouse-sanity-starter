@@ -4,6 +4,7 @@
 - **Goal**: Establish a maintainable GROQ query layer using `defineQuery` + reusable projection fragments (stubs) **in a way that still works with Sanity TypeGen**.
 
 ### Objective
+
 - Create `app/sanity/queries/**` with:
   - **Stubs** (`app/sanity/queries/stubs/*`) for reusable GROQ fragments
   - **Query modules** for key content types
@@ -11,10 +12,12 @@
 - Align queries to ART-357’s schema names/fields.
 
 ### Non-goals
+
 - Rewriting all routes to use the new queries (that integration can happen incrementally and is ultimately verified in ART-356).
 - Any validation layer (no Zod).
 
 ### Key decisions carried in
+
 - **Stubs pattern**: define reusable **string** fragments and compose them into `defineQuery(...)` templates via template-literal interpolation.
   - Sanity TypeGen supports `defineQuery` and supports string interpolation in queries (see [Sanity TypeGen docs](https://www.sanity.io/docs/apis-and-sdks/sanity-typegen#k47494ab9257c)).
   - Avoid custom GROQ functions inside queries, because TypeGen does not support them and they can error generation (see the “Unsupported expressions” note in [Sanity TypeGen docs](https://www.sanity.io/docs/apis-and-sdks/sanity-typegen#k47494ab9257c)).
@@ -22,7 +25,9 @@
 - **Separation**: query modules live in `app/sanity/queries/`, UI components do not contain GROQ.
 
 ### Code touch points
+
 Create:
+
 - `app/sanity/queries/index.ts`
 - `app/sanity/queries/stubs/`
   - `meta.ts`
@@ -40,12 +45,13 @@ Create:
   - `analytics.ts`
 
 ### Implementation plan (step-by-step)
+
 1. **Create folder structure**
    - Add `app/sanity/queries/` and `app/sanity/queries/stubs/`.
 
 2. **Define stub fragments**
    - Use plain **string** fragments for projections, e.g.
-     - `export const metaStub = /* groq */ `title, description, ...``
+     - `export const metaStub = groq`title, description, ...``
    - Compose stubs by interpolation inside the exported query constant:
      - `export const PAGE_QUERY = defineQuery(`... { meta { ${metaStub} }, ... }`)`
    - Keep stubs **static** (string constants) so TypeGen can reason about them. Avoid functions like `const meta = () => '...'`.
@@ -76,6 +82,7 @@ Create:
      - reserve stubs for the “easy wins” (e.g. `meta`, `navLink`) and inline the most complex bit (portable text / rich text).
 
 ### Test plan
+
 - **Manual**:
   - Run the app and verify one loader can execute a query imported from `app/sanity/queries/*`.
   - Validate query strings compile (no runtime GROQ parse errors).
@@ -83,10 +90,12 @@ Create:
   - Confirm queries are discoverable under `./app/**/*.{ts,tsx}` for TypeGen (ART-359 will formalize).
 
 ### Risks / notes
+
 - Ticket examples reference `groq` from `next-sanity` for stubs; this repo already has `groq` (and not `next-sanity`). Prefer fragment strings + `defineQuery` for compatibility.
 - Keep stub names and field selections stable; they become the backbone for UI component props + meta/SEO.
 
 ### Definition of done (mirrors ticket)
+
 - [ ] All stub files in `app/sanity/queries/stubs/`
 - [ ] All query files with `defineQuery`
 - [ ] `index.ts` barrel export
