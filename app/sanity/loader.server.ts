@@ -1,8 +1,11 @@
-import * as serverOnly from '@sanity/react-loader';
 import { client } from '~/lib/sanity';
+import { setServerClient, loadQuery } from './loader';
 
-const { loadQuery, setServerClient } = serverOnly;
+const token =
+  process.env.SANITY_API_READ_TOKEN ??
+  process.env.SANITY_READ_TOKEN ??
+  undefined;
 
-setServerClient(client.withConfig({ token: process.env.SANITY_READ_TOKEN }));
+setServerClient(client.withConfig({ token, useCdn: false }));
 
 export { loadQuery };

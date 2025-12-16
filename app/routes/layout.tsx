@@ -5,7 +5,7 @@ import type {
   SITE_SETTINGS_QUERYResult,
 } from '../../sanity.types';
 import { Outlet } from 'react-router';
-import { useQuery } from '@sanity/react-loader';
+import { useQuery } from '~/sanity/loader';
 import { loadQuery } from '../sanity/loader.server';
 import { previewContext } from '../sanity/preview';
 import {
@@ -13,12 +13,13 @@ import {
   FOOTER_QUERY,
   SITE_SETTINGS_QUERY,
 } from '../sanity/queries';
-import { SiteSettingsDebug } from '../components/site-settings-debug';
 import { Header } from '../components/header';
 import { Footer } from '../components/footer';
+import { Hydrated } from '../components/hydrated';
+import { SanityVisualEditing } from '../components/sanity-visual-editing';
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const { options } = await previewContext(request.headers);
+  const { preview, options } = await previewContext(request.headers);
 
   const [headerData, footerData, siteSettingsData] = await Promise.all([
     loadQuery<HEADER_QUERYResult | null>(HEADER_QUERY, {}, options),
@@ -31,6 +32,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   ]);
 
   return {
+    preview,
     header: headerData,
     footer: footerData,
     siteSettings: siteSettingsData,
@@ -58,12 +60,16 @@ export default function SiteLayout({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteSettingsDebug siteSettings={siteSettings} />
       <Header header={header} />
       <main className="flex-1">
         <Outlet />
       </main>
       <Footer footer={footer} />
+      {loaderData.preview && (
+        <Hydrated>
+          <SanityVisualEditing />
+        </Hydrated>
+      )}
     </div>
   );
 }

@@ -1,9 +1,15 @@
 import type { Route } from './+types/index';
 import type { HOMEPAGE_QUERYResult } from '../../sanity.types';
-import { useQuery } from '@sanity/react-loader';
+import { useQuery } from '~/sanity/loader';
+import { stegaClean } from '@sanity/client/stega';
 import { loadQuery } from '../sanity/loader.server';
 import { previewContext } from '../sanity/preview';
 import { HOMEPAGE_QUERY } from '../sanity/queries';
+import { PageBuilder, RichText } from '~/ui/components';
+
+function cleanVisibility(value: string | null | undefined) {
+  return value ? stegaClean(value) : undefined;
+}
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { options } = await previewContext(request.headers);
@@ -13,11 +19,29 @@ export async function loader({ request }: Route.LoaderArgs) {
     options
   );
 
+  const visibility = cleanVisibility(data.data?.meta?.visibility);
+  if (data.data && visibility === 'private') {
+    throw new Response('Not found', { status: 404 });
+  }
+
   return { data };
 }
 
-export function meta(): Route.MetaDescriptors {
-  return [{ title: 'Arthouse' }, { name: 'description', content: 'Homepage' }];
+export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
+  const homepage = loaderData.data.data;
+  const visibility = cleanVisibility(homepage?.meta?.visibility);
+
+  return [
+    { title: homepage?.title ? `${homepage.title} - Arthouse` : 'Arthouse' },
+    {
+      name: 'description',
+      content: homepage?.meta?.description || homepage?.title || 'Homepage',
+    },
+    {
+      name: 'robots',
+      content: visibility === 'hidden' ? 'noindex,follow' : 'index,follow',
+    },
+  ];
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
@@ -27,6 +51,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
       {},
       { initial: loaderData.data }
     );
+
+  const contentMode = homepage?.contentMode ? stegaClean(homepage.contentMode) : null;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -46,13 +72,16 @@ export default function Index({ loaderData }: Route.ComponentProps) {
             </p>
           </div>
         ) : (
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="mb-4 text-sm text-gray-500">
-              Starter render (temporary): showing fetched document JSON.
-            </p>
-            <pre className="overflow-x-auto text-xs">
-              {JSON.stringify(homepage, null, 2)}
-            </pre>
+          <div className="prose max-w-none">
+            {contentMode === 'pageBuilder' ? (
+              <div data-sanity={encodeDataAttribute(['components'])}>
+                <PageBuilder value={homepage.components} />
+              </div>
+            ) : (
+              <div data-sanity={encodeDataAttribute(['richText'])}>
+                <RichText value={homepage.richText} />
+              </div>
+            )}
           </div>
         )}
       </div>

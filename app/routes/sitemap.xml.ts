@@ -5,7 +5,6 @@ import { loadQuery } from '../sanity/loader.server';
 import { SITEMAP_QUERY } from '../sanity/queries';
 
 function getBaseUrl(request: Request): string {
-  // Prefer explicit production URL when provided, otherwise use current origin.
   if (process.env.PRODUCTION_URL) return getServerConfig().productionUrl;
   return new URL(request.url).origin;
 }
@@ -25,7 +24,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { data } = await loadQuery<SITEMAP_QUERYResult>(
     SITEMAP_QUERY,
     {},
-    // Never generate sitemap from drafts; do not Stega-encode.
     { perspective: 'published', stega: false }
   );
 
@@ -61,4 +59,3 @@ export async function loader({ request }: LoaderFunctionArgs) {
     },
   });
 }
-

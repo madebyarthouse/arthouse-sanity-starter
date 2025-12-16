@@ -1,5 +1,6 @@
 import type { HEADER_QUERYResult } from '../../sanity.types';
-import { SanityImage } from './sanity-image';
+import { Link } from 'react-router';
+import { ComplexImage, NavLink } from '~/ui/components';
 
 interface HeaderProps {
   header: HEADER_QUERYResult | null;
@@ -14,31 +15,27 @@ export function Header({ header }: HeaderProps) {
     <header className="border-b border-gray-200 bg-white">
       <div className="container mx-auto flex items-center justify-between px-4 py-6">
         <div className="flex items-center space-x-8">
-          {header.logo?.asset?.asset && (
-            <SanityImage
-              image={header.logo.asset}
-              alt={header.logo.alt || 'Logo'}
-              width={200}
-              height={40}
-              sizes="200px"
-              widths={[100, 200, 400]}
-              className="h-10 w-auto"
-              priority
-            />
-          )}
+          {header.logo ? (
+            <Link to="/" className="block">
+              <ComplexImage
+                value={header.logo}
+                sizes="200px"
+                widths={[100, 200, 400]}
+                className="h-10 w-[200px]"
+                imgClassName="object-contain"
+                figureClassName="m-0"
+                priority
+                showBlurPlaceholder={false}
+              />
+            </Link>
+          ) : null}
           <nav className="hidden space-x-6 md:flex">
             {header.nav?.map((item, idx) => (
-              <a
+              <NavLink
                 key={idx}
-                href={
-                  item.type === 'internal'
-                    ? `/${item.reference?.slug?.current || ''}`
-                    : item.externalLink?.url || '#'
-                }
+                link={item}
                 className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-              >
-                {item.title}
-              </a>
+              />
             ))}
           </nav>
         </div>

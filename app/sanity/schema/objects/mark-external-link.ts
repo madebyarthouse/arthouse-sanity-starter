@@ -3,8 +3,10 @@ import { labels } from '../../i18n';
 
 const l = labels.objects.markExternalLink;
 
-const isType = (expected: string) =>
-  ({ parent }: { parent?: { type?: string } }) => parent?.type !== expected;
+const isType =
+  (expected: string) =>
+  ({ parent }: { parent?: { type?: string } }) =>
+    parent?.type !== expected;
 
 export const markExternalLink = defineType({
   name: 'markExternalLink',

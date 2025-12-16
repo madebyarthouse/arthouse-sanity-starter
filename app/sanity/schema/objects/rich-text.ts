@@ -26,7 +26,10 @@ export const richText = defineType({
           { title: l.decorators.em, value: 'em' },
           { title: l.decorators.code, value: 'code' },
         ],
-        annotations: [{ type: 'markExternalLink' }, { type: 'markInternalLink' }],
+        annotations: [
+          { type: 'markExternalLink' },
+          { type: 'markInternalLink' },
+        ],
       },
     },
     { type: 'complexImage' },

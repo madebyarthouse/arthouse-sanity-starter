@@ -5,6 +5,7 @@ import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './app/sanity/schema/index';
 import { structure } from './app/sanity/structure';
 import { projectId, dataset, apiVersion } from './app/sanity/project-details';
+import { locations, mainDocuments } from './app/sanity/presentation/resolve';
 
 // Helper to get preview origin in both browser and Node.js environments
 const getPreviewOrigin = () => {
@@ -30,6 +31,8 @@ export default defineConfig({
     structureTool({ structure }),
     visionTool(),
     presentationTool({
+      allowOrigins: ['http://localhost:*'],
+      resolve: { locations, mainDocuments },
       previewUrl: {
         origin: getPreviewOrigin() || 'http://localhost:5173',
         preview: '/',

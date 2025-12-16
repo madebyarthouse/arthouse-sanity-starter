@@ -17,6 +17,7 @@
     "typecheck": "pnpm sanity:types && pnpm rr:typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@portabletext/react": "^3.2.1",
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
     "@sanity/client": "^7.9.0",

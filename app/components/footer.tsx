@@ -1,5 +1,6 @@
 import type { FOOTER_QUERYResult } from '../../sanity.types';
-import { SanityImage } from './sanity-image';
+import { Link } from 'react-router';
+import { ComplexImage, NavLink } from '~/ui/components';
 
 interface FooterProps {
   footer: FOOTER_QUERYResult | null;
@@ -15,17 +16,19 @@ export function Footer({ footer }: FooterProps) {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            {footer.logo?.asset?.asset && (
-              <SanityImage
-                image={footer.logo.asset}
-                alt={footer.logo.alt || 'Logo'}
-                width={150}
-                height={32}
-                sizes="150px"
-                widths={[75, 150, 300]}
-                className="mb-4 h-8 w-auto"
-              />
-            )}
+            {footer.logo ? (
+              <Link to="/" className="inline-block">
+                <ComplexImage
+                  value={footer.logo}
+                  sizes="150px"
+                  widths={[75, 150, 300]}
+                  className="mb-4 h-8 w-[150px]"
+                  imgClassName="object-contain"
+                  figureClassName="m-0"
+                  showBlurPlaceholder={false}
+                />
+              </Link>
+            ) : null}
           </div>
           <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900">
@@ -34,16 +37,10 @@ export function Footer({ footer }: FooterProps) {
             <ul className="space-y-2">
               {footer.mainNav?.map((item, idx) => (
                 <li key={idx}>
-                  <a
-                    href={
-                      item.type === 'internal'
-                        ? `/${item.reference?.slug?.current || ''}`
-                        : item.externalLink?.url || '#'
-                    }
+                  <NavLink
+                    link={item}
                     className="text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    {item.title}
-                  </a>
+                  />
                 </li>
               ))}
             </ul>
@@ -53,16 +50,10 @@ export function Footer({ footer }: FooterProps) {
             <ul className="space-y-2">
               {footer.secondaryNav?.map((item, idx) => (
                 <li key={idx}>
-                  <a
-                    href={
-                      item.type === 'internal'
-                        ? `/${item.reference?.slug?.current || ''}`
-                        : item.externalLink?.url || '#'
-                    }
+                  <NavLink
+                    link={item}
                     className="text-sm text-gray-600 hover:text-gray-900"
-                  >
-                    {item.title}
-                  </a>
+                  />
                 </li>
               ))}
             </ul>
