@@ -1,7 +1,10 @@
 import type { ImgHTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 import { useState } from 'react';
-import { generateSrcSet, urlFor } from '@/components/features/sanity/helpers/url-for';
+import {
+  generateSrcSet,
+  urlFor,
+} from '@/components/features/sanity/helpers/url-for';
 import type { SanityImageSource } from '@sanity/image-url';
 import type { ComplexImage as ComplexImageSchema } from '@gen/sanity';
 
@@ -46,10 +49,10 @@ export function ComplexImage({
   showBlurPlaceholder = true,
   ...imgProps
 }: Props) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const asset = value?.asset ?? null;
   if (!asset?.asset?._ref) return null;
-
-  const [isLoaded, setIsLoaded] = useState(false);
 
   const source = asset as unknown as SanityImageSource;
   const srcSet = generateSrcSet(source, widths);
