@@ -20,8 +20,10 @@ This document tracks follow-up issues found after completing ART-360–365 work.
 - **Problem**: Plausible should not run on localhost, and should use proxy routes when enabled.
 - **Where**: `app/routes/js.script.ts`, `app/routes/api.event.ts`, `app/routes/layout.tsx` (gate injection)
 - **Fix**:
-  - Gate script injection behind consent + `NODE_ENV === 'production'` + non-localhost.
-  - Serve script + forward events through `/js/script` and `/api/event`.
+  - Gate script injection behind consent + production-only + non-localhost.
+  - Respect `plausible.proxyEnabled`:
+    - when enabled: serve script + forward events through `/js/script` + `/api/event`
+    - when disabled: load Plausible directly from `selfHostedUrl` (or `plausible.io`)
 - **Status**: done
 
 #### 3) Studio preview origin runtime error

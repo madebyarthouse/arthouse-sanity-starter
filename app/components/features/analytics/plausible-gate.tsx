@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { useConsentManager, type AllConsentNames } from '@c15t/react';
 import type { SITE_SETTINGS_QUERYResult } from '@gen/sanity';
 
-type AnalyticsConfig = NonNullable<NonNullable<SITE_SETTINGS_QUERYResult>['analytics']>;
+type AnalyticsConfig = NonNullable<
+  NonNullable<SITE_SETTINGS_QUERYResult>['analytics']
+>;
 
 type Props = {
   config: AnalyticsConfig | null | undefined;
@@ -24,13 +26,16 @@ export function PlausibleGate({ config }: Props) {
   useEffect(() => {
     if (typeof document === 'undefined') return;
     if (typeof window === 'undefined') return;
+    if (!import.meta.env.PROD) return;
 
     if (!config?.enabled) return;
     if (!config.plausible?.enabled) return;
 
     const hostname = window.location.hostname;
     const isLocalhost =
-      hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '::1';
     if (isLocalhost) return;
 
     const consent: AllConsentNames = 'functionality';
@@ -41,11 +46,19 @@ export function PlausibleGate({ config }: Props) {
     const domain = config.plausible.domain;
     if (!domain) return;
 
+    const base = (
+      config.plausible.selfHostedUrl ?? 'https://plausible.io'
+    ).replace(/\/$/, '');
+    const useProxy = config.plausible.proxyEnabled ?? true;
+
     const script = document.createElement('script');
     script.id = SCRIPT_ID;
     script.defer = true;
-    script.src = '/js/script';
-    script.setAttribute('data-api', '/api/event');
+    script.src = useProxy ? '/js/script' : `${base}/js/script.js`;
+    script.setAttribute(
+      'data-api',
+      useProxy ? '/api/event' : `${base}/api/event`
+    );
     script.setAttribute('data-domain', domain);
     document.head.appendChild(script);
 

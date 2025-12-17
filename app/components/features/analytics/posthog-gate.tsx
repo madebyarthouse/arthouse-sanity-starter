@@ -3,7 +3,9 @@ import { useConsentManager, type AllConsentNames } from '@c15t/react';
 import posthog from 'posthog-js';
 import type { SITE_SETTINGS_QUERYResult } from '@gen/sanity';
 
-type AnalyticsConfig = NonNullable<NonNullable<SITE_SETTINGS_QUERYResult>['analytics']>;
+type AnalyticsConfig = NonNullable<
+  NonNullable<SITE_SETTINGS_QUERYResult>['analytics']
+>;
 
 type Props = {
   config: AnalyticsConfig | null | undefined;
@@ -14,13 +16,16 @@ export function PostHogGate({ config }: Props) {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (!import.meta.env.PROD) return;
 
     if (!config?.enabled) return;
     if (!config.posthog?.enabled) return;
 
     const hostname = window.location.hostname;
     const isLocalhost =
-      hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '::1';
     if (isLocalhost) return;
 
     const consent: AllConsentNames = 'functionality';
@@ -34,7 +39,7 @@ export function PostHogGate({ config }: Props) {
     posthog.init(projectKey, {
       api_host: config.posthog.proxyEnabled
         ? '/ingest'
-        : config.posthog.host ?? 'https://eu.posthog.com',
+        : (config.posthog.host ?? 'https://eu.posthog.com'),
       autocapture: true,
       capture_pageview: true,
     });
