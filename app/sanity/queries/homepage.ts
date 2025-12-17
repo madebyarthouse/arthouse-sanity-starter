@@ -1,5 +1,6 @@
 import groq, { defineQuery } from 'groq';
 import { complexImageStub } from '@/sanity/queries/stubs/complex-image';
+import { richTextStub } from '@/sanity/queries/stubs/rich-text';
 
 export const HOMEPAGE_QUERY = defineQuery(groq`
   *[_type == "page" && _id == "homepage"][0]{
@@ -15,30 +16,10 @@ export const HOMEPAGE_QUERY = defineQuery(groq`
       visibility
     },
     contentMode,
-    richText[]{
-      ...,
-      markDefs[]{
-        ...,
-        link->{
-          _id,
-          _type,
-          slug
-        }
-      }
-    },
+    richText${richTextStub},
     components[]{
       title,
-      body[]{
-        ...,
-        markDefs[]{
-          ...,
-          link->{
-            _id,
-            _type,
-            slug
-          }
-        }
-      }
+      body${richTextStub}
     }
   }
 `);

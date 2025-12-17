@@ -124,10 +124,49 @@ export const objects: ObjectLabels = {
     description: 'Konfiguration der Analyse-Erfassung für die Website.',
     fields: {
       enabled: { title: 'Aktiviert' },
-      provider: { title: 'Anbieter' },
-      domain: {
-        title: 'Domain',
-        description: 'Wird von Plausible verwendet (z. B. beispiel.de).',
+      consentBanner: {
+        title: 'Consent-Banner',
+        fields: {
+          headline: { title: 'Überschrift' },
+          description: { title: 'Beschreibung' },
+          acceptAllLabel: { title: '„Alle akzeptieren“ Label' },
+          rejectAllLabel: { title: '„Alle ablehnen“ Label' },
+          manageLabel: { title: '„Verwalten“ Label' },
+          saveLabel: { title: '„Speichern“ Label' },
+        },
+      },
+      consentCategories: {
+        title: 'Consent-Kategorien',
+        fields: {
+          key: { title: 'Key' },
+          label: { title: 'Label' },
+          description: { title: 'Beschreibung' },
+          required: { title: 'Erforderlich' },
+        },
+      },
+      plausible: {
+        title: 'Plausible',
+        fields: {
+          enabled: { title: 'Aktiviert' },
+          domain: {
+            title: 'Domain',
+            description: 'Plausible-Site-Domain (z. B. beispiel.de).',
+          },
+          proxyEnabled: { title: 'Proxy-Routen verwenden' },
+          selfHostedUrl: { title: 'Self-hosted URL (optional)' },
+        },
+      },
+      posthog: {
+        title: 'PostHog',
+        fields: {
+          enabled: { title: 'Aktiviert' },
+          projectKey: { title: 'Project key' },
+          host: {
+            title: 'Host',
+            description: 'Standard: https://eu.posthog.com',
+          },
+          proxyEnabled: { title: 'Proxy-Routen verwenden' },
+        },
       },
     },
   },

@@ -5,7 +5,8 @@ import { loadQuery } from '@/sanity/loader.server';
 import { SITEMAP_QUERY } from '@/sanity/queries';
 
 function getBaseUrl(request: Request): string {
-  if (process.env.PRODUCTION_URL) return getServerConfig().productionUrl;
+  if (process.env.SITE_URL || process.env.PRODUCTION_URL)
+    return getServerConfig().productionUrl;
   return new URL(request.url).origin;
 }
 

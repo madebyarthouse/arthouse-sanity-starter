@@ -16,5 +16,6 @@ export default [
   route('api/preview-mode/enable', 'routes/api/preview-mode/enable.ts'),
   route('api/preview-mode/disable', 'routes/api/preview-mode/disable.ts'),
   route('js/script', 'routes/js.script.ts'),
+  route('ingest/*', 'routes/ingest.$.ts'),
   route('studio/*', 'routes/studio.$.tsx'),
 ] satisfies RouteConfig;

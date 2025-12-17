@@ -51,15 +51,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Plausible Analytics Script - DISABLED FOR TESTING */}
-        {/* 
-        <script
-          defer
-          data-api="/api/event"
-          src="/js/script"
-          data-domain={config.productionDomain}
-        />
-        */}
       </head>
       <body>
         {children}

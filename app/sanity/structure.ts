@@ -24,8 +24,6 @@ export const structure: StructureResolver = (S) => {
 
   const singletonIds = {
     homepage: 'homepage',
-    imprint: 'imprint',
-    privacy: 'privacy',
     siteSettings: 'siteSettings',
     themeSettings: 'themeSettings',
     header: 'header',
@@ -53,42 +51,11 @@ export const structure: StructureResolver = (S) => {
         .title(l.page.title)
         .icon(DocumentIcon)
         .child(
-          S.list()
-            .title(l.page.title)
-            .items([
-              S.listItem()
-                .id('all-pages')
-                .title(s.allPages)
-                .child(
-                  S.documentList()
-                    .title(s.allPages)
-                    .filter(
-                      `_type == "page" && !(_id in [${JSON.stringify(singletonIds.homepage)}, ${JSON.stringify(singletonIds.imprint)}, ${JSON.stringify(singletonIds.privacy)}])`
-                    )
-                ),
-
-              S.divider(),
-
-              S.listItem()
-                .id('imprint')
-                .title(s.imprint)
-                .child(
-                  S.document()
-                    .schemaType('page')
-                    .documentId(singletonIds.imprint)
-                    .title(s.imprint)
-                ),
-
-              S.listItem()
-                .id('privacy')
-                .title(s.privacy)
-                .child(
-                  S.document()
-                    .schemaType('page')
-                    .documentId(singletonIds.privacy)
-                    .title(s.privacy)
-                ),
-            ])
+          S.documentList()
+            .title(s.allPages)
+            .filter(
+              `_type == "page" && !(_id in [${JSON.stringify(singletonIds.homepage)}])`
+            )
         ),
 
       S.divider(),

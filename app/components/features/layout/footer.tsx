@@ -5,15 +5,16 @@ import { Container } from '@/components/ui';
 
 interface FooterProps {
   footer: FOOTER_QUERYResult | null;
+  dataSanity?: string;
 }
 
-export function Footer({ footer }: FooterProps) {
+export function Footer({ footer, dataSanity }: FooterProps) {
   if (!footer) {
     return null;
   }
 
   return (
-    <footer className="border-border bg-muted border-t">
+    <footer className="border-border bg-muted border-t" data-sanity={dataSanity}>
       <Container className="py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>

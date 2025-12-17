@@ -173,8 +173,44 @@ export interface ObjectLabels {
     description: string;
     fields: {
       enabled: { title: string };
-      provider: { title: string };
-      domain: { title: string; description: string };
+      consentBanner: {
+        title: string;
+        fields: {
+          headline: { title: string };
+          description: { title: string };
+          acceptAllLabel: { title: string };
+          rejectAllLabel: { title: string };
+          manageLabel: { title: string };
+          saveLabel: { title: string };
+        };
+      };
+      consentCategories: {
+        title: string;
+        fields: {
+          key: { title: string };
+          label: { title: string };
+          description: { title: string };
+          required: { title: string };
+        };
+      };
+      plausible: {
+        title: string;
+        fields: {
+          enabled: { title: string };
+          domain: { title: string; description: string };
+          proxyEnabled: { title: string };
+          selfHostedUrl: { title: string };
+        };
+      };
+      posthog: {
+        title: string;
+        fields: {
+          enabled: { title: string };
+          projectKey: { title: string };
+          host: { title: string; description: string };
+          proxyEnabled: { title: string };
+        };
+      };
     };
   };
   pageBuilderComponent: {

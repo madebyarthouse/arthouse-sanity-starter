@@ -8,18 +8,26 @@ import { projectId, dataset, apiVersion } from './app/sanity/project-details';
 import { locations, mainDocuments } from './app/sanity/presentation/resolve';
 import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
 
-// Helper to get preview origin in both browser and Node.js environments
-const getPreviewOrigin = () => {
-  // In browser (Vite)
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN;
-  }
-  // In Node.js (Sanity CLI)
+function getPreviewOrigin(): string | undefined {
+  // Sanity CLI / Node
   if (typeof process !== 'undefined' && process.env) {
-    return process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN;
+    return (
+      process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ??
+      process.env.SANITY_STUDIO_PREVIEW_ORIGIN ??
+      undefined
+    );
   }
+
+  // Embedded Studio (Vite)
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const env = import.meta.env as unknown as {
+      VITE_SANITY_STUDIO_PREVIEW_ORIGIN?: string;
+    };
+    return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ?? undefined;
+  }
+
   return undefined;
-};
+}
 
 export default defineConfig({
   projectId: projectId!,

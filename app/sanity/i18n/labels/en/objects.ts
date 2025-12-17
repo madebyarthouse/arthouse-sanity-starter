@@ -119,10 +119,49 @@ export const objects: ObjectLabels = {
     description: 'Configure analytics tracking for the site.',
     fields: {
       enabled: { title: 'Enabled' },
-      provider: { title: 'Provider' },
-      domain: {
-        title: 'Domain',
-        description: 'Used by Plausible (e.g. example.com).',
+      consentBanner: {
+        title: 'Consent banner',
+        fields: {
+          headline: { title: 'Headline' },
+          description: { title: 'Description' },
+          acceptAllLabel: { title: 'Accept all label' },
+          rejectAllLabel: { title: 'Reject all label' },
+          manageLabel: { title: 'Manage label' },
+          saveLabel: { title: 'Save label' },
+        },
+      },
+      consentCategories: {
+        title: 'Consent categories',
+        fields: {
+          key: { title: 'Key' },
+          label: { title: 'Label' },
+          description: { title: 'Description' },
+          required: { title: 'Required' },
+        },
+      },
+      plausible: {
+        title: 'Plausible',
+        fields: {
+          enabled: { title: 'Enabled' },
+          domain: {
+            title: 'Domain',
+            description: 'Plausible site domain (e.g. example.com).',
+          },
+          proxyEnabled: { title: 'Use proxy routes' },
+          selfHostedUrl: { title: 'Self-hosted URL (optional)' },
+        },
+      },
+      posthog: {
+        title: 'PostHog',
+        fields: {
+          enabled: { title: 'Enabled' },
+          projectKey: { title: 'Project key' },
+          host: {
+            title: 'Host',
+            description: 'Default: https://eu.posthog.com',
+          },
+          proxyEnabled: { title: 'Use proxy routes' },
+        },
       },
     },
   },

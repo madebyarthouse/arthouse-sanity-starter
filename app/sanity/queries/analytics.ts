@@ -4,8 +4,32 @@ export const ANALYTICS_QUERY = defineQuery(groq`
   *[_type == "siteSettings"][0]{
     analytics{
       enabled,
-      provider,
-      domain
+      consentBanner{
+        headline,
+        description,
+        acceptAllLabel,
+        rejectAllLabel,
+        manageLabel,
+        saveLabel
+      },
+      consentCategories[]{
+        key,
+        label,
+        description,
+        required
+      },
+      plausible{
+        enabled,
+        domain,
+        proxyEnabled,
+        selfHostedUrl
+      },
+      posthog{
+        enabled,
+        projectKey,
+        host,
+        proxyEnabled
+      }
     }
   }
 `);

@@ -17,8 +17,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm run build` - Build React Router app for production (includes Sanity Studio)
 - `pnpm run start` - Start production server
 - `pnpm run rr:typegen` - Generate React Router types
- - `pnpm run sanity:dev` - Run Sanity Studio dev server (standalone)
- - `pnpm run sanity:types` - Regenerate `sanity.types.ts` from schema + GROQ queries
+- `pnpm run sanity:dev` - Run Sanity Studio dev server (standalone)
+- `pnpm run sanity:types` - Regenerate `sanity.types.ts` from schema + GROQ queries
 
 ### Code Quality
 

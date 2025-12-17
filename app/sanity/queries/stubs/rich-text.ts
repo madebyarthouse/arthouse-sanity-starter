@@ -1,6 +1,6 @@
 export const richTextStub = `[]{
   ...,
-  markDefs[]{
+  "markDefs": coalesce(markDefs, [])[]{
     ...,
     link->{
       _id,

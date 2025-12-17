@@ -22,8 +22,32 @@ export const SITE_SETTINGS_QUERY = defineQuery(groq`
     imprint->{_id, _type, title, slug, meta{visibility}},
     analytics{
       enabled,
-      provider,
-      domain
+      consentBanner{
+        headline,
+        description,
+        acceptAllLabel,
+        rejectAllLabel,
+        manageLabel,
+        saveLabel
+      },
+      consentCategories[]{
+        key,
+        label,
+        description,
+        required
+      },
+      plausible{
+        enabled,
+        domain,
+        proxyEnabled,
+        selfHostedUrl
+      },
+      posthog{
+        enabled,
+        projectKey,
+        host,
+        proxyEnabled
+      }
     }
   }
 `);

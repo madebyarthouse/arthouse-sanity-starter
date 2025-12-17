@@ -139,8 +139,34 @@ export type PageBuilderComponent = {
 export type AnalyticsSettings = {
   _type: 'analyticsSettings';
   enabled?: boolean;
-  provider?: 'plausible';
-  domain?: string;
+  consentBanner?: {
+    headline?: string;
+    description?: string;
+    acceptAllLabel?: string;
+    rejectAllLabel?: string;
+    manageLabel?: string;
+    saveLabel?: string;
+  };
+  consentCategories?: Array<{
+    key?: string;
+    label?: string;
+    description?: string;
+    required?: boolean;
+    _type: 'consentCategory';
+    _key: string;
+  }>;
+  plausible?: {
+    enabled?: boolean;
+    domain?: string;
+    proxyEnabled?: boolean;
+    selfHostedUrl?: string;
+  };
+  posthog?: {
+    enabled?: boolean;
+    projectKey?: string;
+    host?: string;
+    proxyEnabled?: boolean;
+  };
 };
 
 export type MetaSettings = {
@@ -454,12 +480,36 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./app/sanity/queries/analytics.ts
 // Variable: ANALYTICS_QUERY
-// Query: *[_type == "siteSettings"][0]{    analytics{      enabled,      provider,      domain    }  }
+// Query: *[_type == "siteSettings"][0]{    analytics{      enabled,      consentBanner{        headline,        description,        acceptAllLabel,        rejectAllLabel,        manageLabel,        saveLabel      },      consentCategories[]{        key,        label,        description,        required      },      plausible{        enabled,        domain,        proxyEnabled,        selfHostedUrl      },      posthog{        enabled,        projectKey,        host,        proxyEnabled      }    }  }
 export type ANALYTICS_QUERYResult = {
   analytics: {
     enabled: boolean | null;
-    provider: 'plausible' | null;
-    domain: string | null;
+    consentBanner: {
+      headline: string | null;
+      description: string | null;
+      acceptAllLabel: string | null;
+      rejectAllLabel: string | null;
+      manageLabel: string | null;
+      saveLabel: string | null;
+    } | null;
+    consentCategories: Array<{
+      key: string | null;
+      label: string | null;
+      description: string | null;
+      required: boolean | null;
+    }> | null;
+    plausible: {
+      enabled: boolean | null;
+      domain: string | null;
+      proxyEnabled: boolean | null;
+      selfHostedUrl: string | null;
+    } | null;
+    posthog: {
+      enabled: boolean | null;
+      projectKey: string | null;
+      host: string | null;
+      proxyEnabled: boolean | null;
+    } | null;
   } | null;
 } | null;
 
@@ -577,7 +627,7 @@ export type HEADER_QUERYResult = {
 
 // Source: ./app/sanity/queries/homepage.ts
 // Variable: HOMEPAGE_QUERY
-// Query: *[_type == "page" && _id == "homepage"][0]{    _id,    _type,    title,    slug,    meta{      title,      description,      keywords,      ogImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},      visibility    },    contentMode,    richText[]{      ...,      markDefs[]{        ...,        link->{          _id,          _type,          slug        }      }    },    components[]{      title,      body[]{        ...,        markDefs[]{          ...,          link->{            _id,            _type,            slug          }        }      }    }  }
+// Query: *[_type == "page" && _id == "homepage"][0]{    _id,    _type,    title,    slug,    meta{      title,      description,      keywords,      ogImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},      visibility    },    contentMode,    richText[]{  ...,  "markDefs": coalesce(markDefs, [])[]{    ...,    link->{      _id,      _type,      slug    }  }},    components[]{      title,      body[]{  ...,  "markDefs": coalesce(markDefs, [])[]{    ...,    link->{      _id,      _type,      slug    }  }}    }  }
 export type HOMEPAGE_QUERYResult = {
   _id: string;
   _type: 'page';
@@ -616,36 +666,38 @@ export type HOMEPAGE_QUERYResult = {
         }>;
         style?: 'h1' | 'h2' | 'h3' | 'normal';
         listItem?: 'bullet' | 'number';
-        markDefs: Array<
-          | {
-              _key: string;
-              _type: 'markExternalLink';
-              type?: 'email' | 'file' | 'phone' | 'url';
-              url?: string;
-              email?: string;
-              phone?: string;
-              file?: {
-                asset?: {
-                  _ref: string;
-                  _type: 'reference';
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
-                };
-                media?: unknown;
-                _type: 'file';
-              };
-              link: null;
-            }
-          | {
-              _key: string;
-              _type: 'markInternalLink';
-              link: {
-                _id: string;
-                _type: 'page';
-                slug: Slug | null;
-              } | null;
-            }
-        > | null;
+        markDefs:
+          | Array<never>
+          | Array<
+              | {
+                  _key: string;
+                  _type: 'markExternalLink';
+                  type?: 'email' | 'file' | 'phone' | 'url';
+                  url?: string;
+                  email?: string;
+                  phone?: string;
+                  file?: {
+                    asset?: {
+                      _ref: string;
+                      _type: 'reference';
+                      _weak?: boolean;
+                      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+                    };
+                    media?: unknown;
+                    _type: 'file';
+                  };
+                  link: null;
+                }
+              | {
+                  _key: string;
+                  _type: 'markInternalLink';
+                  link: {
+                    _id: string;
+                    _type: 'page';
+                    slug: Slug | null;
+                  } | null;
+                }
+            >;
         level?: number;
         _type: 'block';
         _key: string;
@@ -668,13 +720,13 @@ export type HOMEPAGE_QUERYResult = {
         alt?: string;
         caption?: string;
         width?: number;
-        markDefs: null;
+        markDefs: Array<never>;
       }
     | {
         _key: string;
         _type: 'separator';
         info?: string;
-        markDefs: null;
+        markDefs: Array<never>;
       }
   > | null;
   components: Array<{
@@ -689,36 +741,38 @@ export type HOMEPAGE_QUERYResult = {
           }>;
           style?: 'h1' | 'h2' | 'h3' | 'normal';
           listItem?: 'bullet' | 'number';
-          markDefs: Array<
-            | {
-                _key: string;
-                _type: 'markExternalLink';
-                type?: 'email' | 'file' | 'phone' | 'url';
-                url?: string;
-                email?: string;
-                phone?: string;
-                file?: {
-                  asset?: {
-                    _ref: string;
-                    _type: 'reference';
-                    _weak?: boolean;
-                    [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
-                  };
-                  media?: unknown;
-                  _type: 'file';
-                };
-                link: null;
-              }
-            | {
-                _key: string;
-                _type: 'markInternalLink';
-                link: {
-                  _id: string;
-                  _type: 'page';
-                  slug: Slug | null;
-                } | null;
-              }
-          > | null;
+          markDefs:
+            | Array<never>
+            | Array<
+                | {
+                    _key: string;
+                    _type: 'markExternalLink';
+                    type?: 'email' | 'file' | 'phone' | 'url';
+                    url?: string;
+                    email?: string;
+                    phone?: string;
+                    file?: {
+                      asset?: {
+                        _ref: string;
+                        _type: 'reference';
+                        _weak?: boolean;
+                        [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+                      };
+                      media?: unknown;
+                      _type: 'file';
+                    };
+                    link: null;
+                  }
+                | {
+                    _key: string;
+                    _type: 'markInternalLink';
+                    link: {
+                      _id: string;
+                      _type: 'page';
+                      slug: Slug | null;
+                    } | null;
+                  }
+              >;
           level?: number;
           _type: 'block';
           _key: string;
@@ -741,13 +795,13 @@ export type HOMEPAGE_QUERYResult = {
           alt?: string;
           caption?: string;
           width?: number;
-          markDefs: null;
+          markDefs: Array<never>;
         }
       | {
           _key: string;
           _type: 'separator';
           info?: string;
-          markDefs: null;
+          markDefs: Array<never>;
         }
     > | null;
   }> | null;
@@ -755,7 +809,7 @@ export type HOMEPAGE_QUERYResult = {
 
 // Source: ./app/sanity/queries/page.ts
 // Variable: PAGE_QUERY
-// Query: *[_type == "page" && slug.current == $slug][0]{    _id,    _type,    title,    slug,    meta{      title,      description,      keywords,      ogImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},      visibility    },    contentMode,    richText[]{      ...,      markDefs[]{        ...,        link->{          _id,          _type,          slug        }      }    },    components[]{      title,      body[]{        ...,        markDefs[]{          ...,          link->{            _id,            _type,            slug          }        }      }    }  }
+// Query: *[_type == "page" && slug.current == $slug][0]{    _id,    _type,    title,    slug,    meta{      title,      description,      keywords,      ogImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},      visibility    },    contentMode,    richText[]{  ...,  "markDefs": coalesce(markDefs, [])[]{    ...,    link->{      _id,      _type,      slug    }  }},    components[]{      title,      body[]{  ...,  "markDefs": coalesce(markDefs, [])[]{    ...,    link->{      _id,      _type,      slug    }  }}    }  }
 export type PAGE_QUERYResult = {
   _id: string;
   _type: 'page';
@@ -794,36 +848,38 @@ export type PAGE_QUERYResult = {
         }>;
         style?: 'h1' | 'h2' | 'h3' | 'normal';
         listItem?: 'bullet' | 'number';
-        markDefs: Array<
-          | {
-              _key: string;
-              _type: 'markExternalLink';
-              type?: 'email' | 'file' | 'phone' | 'url';
-              url?: string;
-              email?: string;
-              phone?: string;
-              file?: {
-                asset?: {
-                  _ref: string;
-                  _type: 'reference';
-                  _weak?: boolean;
-                  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
-                };
-                media?: unknown;
-                _type: 'file';
-              };
-              link: null;
-            }
-          | {
-              _key: string;
-              _type: 'markInternalLink';
-              link: {
-                _id: string;
-                _type: 'page';
-                slug: Slug | null;
-              } | null;
-            }
-        > | null;
+        markDefs:
+          | Array<never>
+          | Array<
+              | {
+                  _key: string;
+                  _type: 'markExternalLink';
+                  type?: 'email' | 'file' | 'phone' | 'url';
+                  url?: string;
+                  email?: string;
+                  phone?: string;
+                  file?: {
+                    asset?: {
+                      _ref: string;
+                      _type: 'reference';
+                      _weak?: boolean;
+                      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+                    };
+                    media?: unknown;
+                    _type: 'file';
+                  };
+                  link: null;
+                }
+              | {
+                  _key: string;
+                  _type: 'markInternalLink';
+                  link: {
+                    _id: string;
+                    _type: 'page';
+                    slug: Slug | null;
+                  } | null;
+                }
+            >;
         level?: number;
         _type: 'block';
         _key: string;
@@ -846,13 +902,13 @@ export type PAGE_QUERYResult = {
         alt?: string;
         caption?: string;
         width?: number;
-        markDefs: null;
+        markDefs: Array<never>;
       }
     | {
         _key: string;
         _type: 'separator';
         info?: string;
-        markDefs: null;
+        markDefs: Array<never>;
       }
   > | null;
   components: Array<{
@@ -867,36 +923,38 @@ export type PAGE_QUERYResult = {
           }>;
           style?: 'h1' | 'h2' | 'h3' | 'normal';
           listItem?: 'bullet' | 'number';
-          markDefs: Array<
-            | {
-                _key: string;
-                _type: 'markExternalLink';
-                type?: 'email' | 'file' | 'phone' | 'url';
-                url?: string;
-                email?: string;
-                phone?: string;
-                file?: {
-                  asset?: {
-                    _ref: string;
-                    _type: 'reference';
-                    _weak?: boolean;
-                    [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
-                  };
-                  media?: unknown;
-                  _type: 'file';
-                };
-                link: null;
-              }
-            | {
-                _key: string;
-                _type: 'markInternalLink';
-                link: {
-                  _id: string;
-                  _type: 'page';
-                  slug: Slug | null;
-                } | null;
-              }
-          > | null;
+          markDefs:
+            | Array<never>
+            | Array<
+                | {
+                    _key: string;
+                    _type: 'markExternalLink';
+                    type?: 'email' | 'file' | 'phone' | 'url';
+                    url?: string;
+                    email?: string;
+                    phone?: string;
+                    file?: {
+                      asset?: {
+                        _ref: string;
+                        _type: 'reference';
+                        _weak?: boolean;
+                        [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+                      };
+                      media?: unknown;
+                      _type: 'file';
+                    };
+                    link: null;
+                  }
+                | {
+                    _key: string;
+                    _type: 'markInternalLink';
+                    link: {
+                      _id: string;
+                      _type: 'page';
+                      slug: Slug | null;
+                    } | null;
+                  }
+              >;
           level?: number;
           _type: 'block';
           _key: string;
@@ -919,13 +977,13 @@ export type PAGE_QUERYResult = {
           alt?: string;
           caption?: string;
           width?: number;
-          markDefs: null;
+          markDefs: Array<never>;
         }
       | {
           _key: string;
           _type: 'separator';
           info?: string;
-          markDefs: null;
+          markDefs: Array<never>;
         }
     > | null;
   }> | null;
@@ -933,7 +991,7 @@ export type PAGE_QUERYResult = {
 
 // Source: ./app/sanity/queries/site-settings.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    metaSettings{      siteTitle,      titleTemplate,      defaultDescription,      defaultKeywords,      defaultOgImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }}    },    favicon{      ...,      asset->{_id, url}    },    ogVisual{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    socials[]{platform, url},    privacyPolicy->{_id, _type, title, slug, meta{visibility}},    imprint->{_id, _type, title, slug, meta{visibility}},    analytics{      enabled,      provider,      domain    }  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    metaSettings{      siteTitle,      titleTemplate,      defaultDescription,      defaultKeywords,      defaultOgImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }}    },    favicon{      ...,      asset->{_id, url}    },    ogVisual{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    socials[]{platform, url},    privacyPolicy->{_id, _type, title, slug, meta{visibility}},    imprint->{_id, _type, title, slug, meta{visibility}},    analytics{      enabled,      consentBanner{        headline,        description,        acceptAllLabel,        rejectAllLabel,        manageLabel,        saveLabel      },      consentCategories[]{        key,        label,        description,        required      },      plausible{        enabled,        domain,        proxyEnabled,        selfHostedUrl      },      posthog{        enabled,        projectKey,        host,        proxyEnabled      }    }  }
 export type SITE_SETTINGS_QUERYResult = {
   _id: string;
   _type: 'siteSettings';
@@ -1021,8 +1079,32 @@ export type SITE_SETTINGS_QUERYResult = {
   } | null;
   analytics: {
     enabled: boolean | null;
-    provider: 'plausible' | null;
-    domain: string | null;
+    consentBanner: {
+      headline: string | null;
+      description: string | null;
+      acceptAllLabel: string | null;
+      rejectAllLabel: string | null;
+      manageLabel: string | null;
+      saveLabel: string | null;
+    } | null;
+    consentCategories: Array<{
+      key: string | null;
+      label: string | null;
+      description: string | null;
+      required: boolean | null;
+    }> | null;
+    plausible: {
+      enabled: boolean | null;
+      domain: string | null;
+      proxyEnabled: boolean | null;
+      selfHostedUrl: string | null;
+    } | null;
+    posthog: {
+      enabled: boolean | null;
+      projectKey: string | null;
+      host: string | null;
+      proxyEnabled: boolean | null;
+    } | null;
   } | null;
 } | null;
 
@@ -1049,12 +1131,12 @@ export type THEME_SETTINGS_QUERYResult = {
 import '@sanity/client';
 declare module '@sanity/client' {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings"][0]{\n    analytics{\n      enabled,\n      provider,\n      domain\n    }\n  }\n': ANALYTICS_QUERYResult;
+    '\n  *[_type == "siteSettings"][0]{\n    analytics{\n      enabled,\n      consentBanner{\n        headline,\n        description,\n        acceptAllLabel,\n        rejectAllLabel,\n        manageLabel,\n        saveLabel\n      },\n      consentCategories[]{\n        key,\n        label,\n        description,\n        required\n      },\n      plausible{\n        enabled,\n        domain,\n        proxyEnabled,\n        selfHostedUrl\n      },\n      posthog{\n        enabled,\n        projectKey,\n        host,\n        proxyEnabled\n      }\n    }\n  }\n': ANALYTICS_QUERYResult;
     '\n  *[_type == "footer"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    mainNav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    },\n    secondaryNav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    },\n    socials[]{platform, url}\n  }\n': FOOTER_QUERYResult;
     '\n  *[_type == "header"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    nav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    }\n  }\n': HEADER_QUERYResult;
-    '\n  *[_type == "page" && _id == "homepage"][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n      ...,\n      markDefs[]{\n        ...,\n        link->{\n          _id,\n          _type,\n          slug\n        }\n      }\n    },\n    components[]{\n      title,\n      body[]{\n        ...,\n        markDefs[]{\n          ...,\n          link->{\n            _id,\n            _type,\n            slug\n          }\n        }\n      }\n    }\n  }\n': HOMEPAGE_QUERYResult;
-    '\n  *[_type == "page" && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n      ...,\n      markDefs[]{\n        ...,\n        link->{\n          _id,\n          _type,\n          slug\n        }\n      }\n    },\n    components[]{\n      title,\n      body[]{\n        ...,\n        markDefs[]{\n          ...,\n          link->{\n            _id,\n            _type,\n            slug\n          }\n        }\n      }\n    }\n  }\n': PAGE_QUERYResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    metaSettings{\n      siteTitle,\n      titleTemplate,\n      defaultDescription,\n      defaultKeywords,\n      defaultOgImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n}\n    },\n    favicon{\n      ...,\n      asset->{_id, url}\n    },\n    ogVisual{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    socials[]{platform, url},\n    privacyPolicy->{_id, _type, title, slug, meta{visibility}},\n    imprint->{_id, _type, title, slug, meta{visibility}},\n    analytics{\n      enabled,\n      provider,\n      domain\n    }\n  }\n': SITE_SETTINGS_QUERYResult;
+    '\n  *[_type == "page" && _id == "homepage"][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n},\n    components[]{\n      title,\n      body[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n}\n    }\n  }\n': HOMEPAGE_QUERYResult;
+    '\n  *[_type == "page" && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n},\n    components[]{\n      title,\n      body[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n}\n    }\n  }\n': PAGE_QUERYResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    metaSettings{\n      siteTitle,\n      titleTemplate,\n      defaultDescription,\n      defaultKeywords,\n      defaultOgImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n}\n    },\n    favicon{\n      ...,\n      asset->{_id, url}\n    },\n    ogVisual{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    socials[]{platform, url},\n    privacyPolicy->{_id, _type, title, slug, meta{visibility}},\n    imprint->{_id, _type, title, slug, meta{visibility}},\n    analytics{\n      enabled,\n      consentBanner{\n        headline,\n        description,\n        acceptAllLabel,\n        rejectAllLabel,\n        manageLabel,\n        saveLabel\n      },\n      consentCategories[]{\n        key,\n        label,\n        description,\n        required\n      },\n      plausible{\n        enabled,\n        domain,\n        proxyEnabled,\n        selfHostedUrl\n      },\n      posthog{\n        enabled,\n        projectKey,\n        host,\n        proxyEnabled\n      }\n    }\n  }\n': SITE_SETTINGS_QUERYResult;
     '\n  *[\n    _type == "page" &&\n    (meta.visibility == "public" || !defined(meta.visibility))\n  ]{\n    "url": select(\n      _id == "homepage" => "/",\n      defined(slug.current) => "/" + slug.current,\n      null\n    ),\n    _updatedAt\n  }[defined(url)]\n': SITEMAP_QUERYResult;
     '\n  *[_type == "themeSettings"][0]{\n    _id,\n    _type,\n    brandColor,\n    textColor,\n    backgroundColor\n  }\n': THEME_SETTINGS_QUERYResult;
   }

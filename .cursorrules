@@ -1,0 +1,23 @@
+# Cursor rules for this repo
+
+## Imports
+- Prefer absolute imports via aliases.
+  - Use @/… for anything under app/.
+  - Use @gen/sanity for generated Sanity query types (type-only imports).
+  - Use @root/… for runtime imports from repo root when needed.
+- Do not introduce relative imports (../../ etc) except:
+  - React Router route type imports must remain ./+types/*.
+
+## Styling
+- Tailwind classes only.
+- Do not add CSS modules or component-level CSS files.
+- Keep global CSS limited to app/app.css (Tailwind v4 @theme tokens + minimal base).
+
+## Structure
+- UI primitives go in app/components/ui.
+- Feature components go in app/components/features/<feature>.
+- Sanity schema-mapped components live in app/components/features/sanity.
+
+## Workflow
+- After schema or GROQ changes run pnpm typecheck.
+- Format with pnpm format.

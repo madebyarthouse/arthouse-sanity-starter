@@ -1,9 +1,14 @@
 import type { ReactNode } from 'react';
-import { PortableText, type PortableTextComponents } from '@portabletext/react';
+import {
+  PortableText,
+  type PortableTextComponents,
+  type PortableTextMarkComponentProps,
+  type PortableTextTypeComponentProps,
+} from '@portabletext/react';
 import type {
+  ComplexImage as ComplexImageSchema,
   HOMEPAGE_QUERYResult,
   PAGE_QUERYResult,
-  RichText as RichTextSchema,
 } from '@gen/sanity';
 import {
   ComplexImage,
@@ -30,7 +35,6 @@ type HomepageBuilderBody = NonNullable<
 >;
 
 export type RichTextValue =
-  | RichTextSchema
   | PageRichText
   | HomepageRichText
   | PageBuilderBody
@@ -38,28 +42,22 @@ export type RichTextValue =
 
 type Props = {
   value: RichTextValue | null | undefined;
-  components?: Partial<PortableTextComponents>;
 };
 
 type ChildrenProps = { children?: ReactNode };
-type MarkProps = { children?: ReactNode; value?: unknown };
-type TypeProps = { value?: unknown };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return !!value && typeof value === 'object' && !Array.isArray(value);
-}
+type MarkInternalLinkDeref = {
+  _type: 'markInternalLink';
+  _key?: string;
+  link?: { _id: string; _type: 'page'; slug: { current?: string | null } | null } | null;
+};
 
-function mergeSection<T>(defaults: T, overrides: T | undefined): T {
-  if (!overrides) return defaults;
-  if (typeof overrides === 'function') return overrides;
-  if (isRecord(defaults) && isRecord(overrides)) {
-    return { ...defaults, ...overrides } as T;
-  }
-  return overrides;
-}
+type MarkExternalLinkValue = NonNullable<
+  NonNullable<PageRichText[number]>['markDefs']
+>[number] & { _type: 'markExternalLink' };
 
-export function RichText({ value, components }: Props) {
-  if (!value || value.length === 0) return null;
+export function RichText({ value }: Props) {
+  if (!value?.length) return null;
 
   const defaults: PortableTextComponents = {
     block: {
@@ -89,13 +87,19 @@ export function RichText({ value, components }: Props) {
       number: ({ children }: ChildrenProps) => <li>{children}</li>,
     },
     marks: {
-      markExternalLink: ({ children, value }: MarkProps) => (
-        <ExternalLink value={value as ExternalLinkValue}>
+      markExternalLink: ({
+        children,
+        value,
+      }: PortableTextMarkComponentProps<MarkExternalLinkValue>) => (
+        <ExternalLink value={value ?? null}>
           {children}
         </ExternalLink>
       ),
-      markInternalLink: ({ children, value }: MarkProps) => (
-        <InternalLink value={value as InternalLinkValue}>
+      markInternalLink: ({
+        children,
+        value,
+      }: PortableTextMarkComponentProps<MarkInternalLinkDeref>) => (
+        <InternalLink value={value ?? null}>
           {children}
         </InternalLink>
       ),
@@ -106,24 +110,14 @@ export function RichText({ value, components }: Props) {
       ),
     },
     types: {
-      complexImage: ({ value }: TypeProps) => (
-        <ComplexImage value={value as ComplexImageValue} />
+      complexImage: ({
+        value,
+      }: PortableTextTypeComponentProps<ComplexImageSchema & { _key?: string }>) => (
+        <ComplexImage value={value} />
       ),
       separator: () => <hr className="my-8 border-gray-200" />,
     },
   };
 
-  const merged: PortableTextComponents = {
-    ...defaults,
-    ...components,
-    block: mergeSection(defaults.block, components?.block),
-    list: mergeSection(defaults.list, components?.list),
-    listItem: mergeSection(defaults.listItem, components?.listItem),
-    marks: mergeSection(defaults.marks, components?.marks),
-    types: mergeSection(defaults.types, components?.types),
-  };
-
-  // PortableText's TS types are strict about the exact union shape.
-  // We keep the public prop typed, and isolate any needed cast here.
-  return <PortableText value={value as any} components={merged} />;
+  return <PortableText value={value} components={defaults} />;
 }
