@@ -1,24 +1,26 @@
 // Server-side configuration - only use on the server
 export function getServerConfig() {
+  const siteUrl = process.env.SITE_URL ?? process.env.PRODUCTION_URL ?? '';
+  const normalizedSiteUrl = siteUrl ? siteUrl.replace(/\/$/, '') : '';
+  const host = normalizedSiteUrl ? new URL(normalizedSiteUrl).hostname : '';
+
   return {
-    productionDomain: process.env.PLAUSIBLE_DOMAIN || 'your-domain.com', // Change this to your actual domain
-    productionUrl:
-      process.env.PRODUCTION_URL ||
-      `https://${process.env.PLAUSIBLE_DOMAIN || 'your-domain.com'}`,
-    themeColor: '#000', // Your brand color
+    siteUrl: normalizedSiteUrl,
+    siteHost: host,
+    productionUrl: normalizedSiteUrl,
   };
 }
 
 // Client-side configuration type
 export type Config = {
-  productionDomain: string;
+  siteUrl: string;
+  siteHost: string;
   productionUrl: string;
-  themeColor: string;
 };
 
 // Default client config (used as fallback)
 export const defaultConfig: Config = {
-  productionDomain: 'your-domain.com',
-  productionUrl: 'https://your-domain.com',
-  themeColor: '#000',
+  siteUrl: '',
+  siteHost: '',
+  productionUrl: '',
 };

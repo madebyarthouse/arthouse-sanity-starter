@@ -9,9 +9,8 @@ import {
 } from 'react-router';
 
 import type { Route } from './+types/root';
-import { getServerConfig } from './config';
-import { SanityVisualEditing } from './components/sanity-visual-editing';
-import { previewContext } from './sanity/preview';
+import { getServerConfig } from '@/config';
+import { previewContext } from '@/sanity/preview';
 import './app.css';
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -20,6 +19,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const ENV = {
     VITE_SANITY_PROJECT_ID: process.env.VITE_SANITY_PROJECT_ID,
     VITE_SANITY_DATASET: process.env.VITE_SANITY_DATASET,
+    VITE_SANITY_API_VERSION: process.env.VITE_SANITY_API_VERSION,
     VITE_SANITY_STUDIO_URL: process.env.VITE_SANITY_STUDIO_URL,
   };
 
@@ -51,21 +51,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Plausible Analytics Script - DISABLED FOR TESTING */}
-        {/* 
-        <script
-          defer
-          data-api="/api/event"
-          src="/js/script"
-          data-domain={config.productionDomain}
-        />
-        */}
       </head>
       <body>
         {children}
         <ScrollRestoration />
         <Scripts />
-        {data?.preview && <SanityVisualEditing />}
         {/* dangerouslySetInnerHTML coming from guide https://www.sanity.io/docs/visual-editing/visual-editing-with-react-router */}
         <script
           dangerouslySetInnerHTML={{

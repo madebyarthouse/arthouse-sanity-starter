@@ -2,8 +2,32 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { presentationTool } from 'sanity/presentation';
-import { schemaTypes } from './app/sanity/schema';
+import { schemaTypes } from './app/sanity/schema/index';
+import { structure } from './app/sanity/structure';
 import { projectId, dataset, apiVersion } from './app/sanity/project-details';
+import { locations, mainDocuments } from './app/sanity/presentation/resolve';
+import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
+
+function getPreviewOrigin(): string | undefined {
+  // Sanity CLI / Node
+  if (typeof process !== 'undefined' && process.env) {
+    return (
+      process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ??
+      process.env.SANITY_STUDIO_PREVIEW_ORIGIN ??
+      undefined
+    );
+  }
+
+  // Embedded Studio (Vite)
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const env = import.meta.env as unknown as {
+      VITE_SANITY_STUDIO_PREVIEW_ORIGIN?: string;
+    };
+    return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ?? undefined;
+  }
+
+  return undefined;
+}
 
 export default defineConfig({
   projectId: projectId!,
@@ -11,15 +35,17 @@ export default defineConfig({
   apiVersion,
   name: 'default',
   title: 'arthouse-sanity-starter',
+  icon: StudioLogo,
+  theme: studioTheme,
   basePath: '/studio',
   plugins: [
-    structureTool(),
+    structureTool({ structure }),
     visionTool(),
     presentationTool({
+      allowOrigins: ['http://localhost:*'],
+      resolve: { locations, mainDocuments },
       previewUrl: {
-        origin:
-          import.meta.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ||
-          'http://localhost:5173',
+        origin: getPreviewOrigin() || 'http://localhost:5173',
         preview: '/',
         previewMode: {
           enable: '/api/preview-mode/enable',
@@ -31,17 +57,5 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
-  },
-
-  typegen: {
-    // Look for GROQ queries in the app directory
-    targets: [
-      {
-        name: 'types',
-        path: './app/sanity/types.ts',
-        schema: './app/sanity/schema.ts',
-        queries: ['./app/**/*.{ts,tsx}'],
-      },
-    ],
   },
 });

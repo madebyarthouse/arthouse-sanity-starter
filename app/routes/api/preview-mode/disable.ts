@@ -1,5 +1,5 @@
 import { redirect } from 'react-router';
-import { destroySession, getSession } from '~/sanity/preview';
+import { destroySession, getSession } from '@/sanity/preview';
 import type { Route } from './+types/disable';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {

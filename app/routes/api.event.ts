@@ -1,16 +1,32 @@
 import type { Route } from './+types/api.event';
+import type { ANALYTICS_QUERYResult } from '@gen/sanity';
+import { loadQuery } from '@/sanity/loader.server';
+import { ANALYTICS_QUERY } from '@/sanity/queries';
 
 export async function action({ request }: Route.ActionArgs) {
-  if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+  if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+  if (process.env.NODE_ENV !== 'production') return new Response('OK', { status: 200 });
+
+  const { data } = await loadQuery<ANALYTICS_QUERYResult>(
+    ANALYTICS_QUERY,
+    {},
+    { perspective: 'published', stega: false }
+  );
+
+  const plausible = data?.analytics?.plausible;
+  if (!data?.analytics?.enabled || !plausible?.enabled) {
+    return new Response('OK', { status: 200 });
   }
 
-  // DISABLED FOR TESTING - Return success without sending to Plausible
-  console.log('Plausible analytics disabled - would have tracked event');
-  return new Response('OK', { status: 200 });
+  const url = new URL(request.url);
+  const isLocalhost =
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.hostname === '::1';
+  if (isLocalhost) {
+    return new Response('OK', { status: 200 });
+  }
 
-  /* ORIGINAL PLAUSIBLE CODE - COMMENTED OUT FOR TESTING
-  // Extract client IP for proper attribution
   const clientIp =
     request.headers.get('cf-connecting-ip') ||
     request.headers.get('x-forwarded-for') ||
@@ -19,29 +35,26 @@ export async function action({ request }: Route.ActionArgs) {
     request.headers.get('x-nf-client-connection-ip');
 
   const userAgent = request.headers.get('user-agent');
+  const contentType = request.headers.get('content-type') ?? 'application/json';
+  const body = await request.text();
 
-  try {
-    const body = await request.text();
-    
-    const response = await fetch("https://plausible.io/api/event", {
-      body,
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        ...(clientIp && { "X-Forwarded-For": clientIp }),
-        ...(userAgent && { "User-Agent": userAgent }),
-      },
-    });
+  const base =
+    plausible.selfHostedUrl?.replace(/\/$/, '') ?? 'https://plausible.io';
+  const upstream = `${base}/api/event`;
 
-    const responseBody = await response.text();
-    
-    return new Response(responseBody, {
-      status: response.status,
-      headers: response.headers,
-    });
-  } catch (error) {
-    console.error('Plausible event proxy error:', error);
-    return new Response('Internal Server Error', { status: 500 });
-  }
-  */
+  const res = await fetch(upstream, {
+    body,
+    method: 'POST',
+    headers: {
+      'Content-Type': contentType,
+      ...(clientIp ? { 'X-Forwarded-For': clientIp } : null),
+      ...(userAgent ? { 'User-Agent': userAgent } : null),
+    } as Record<string, string>,
+  });
+
+  const resBody = await res.text();
+  return new Response(resBody, {
+    status: res.status,
+    headers: { 'Content-Type': res.headers.get('content-type') ?? 'text/plain' },
+  });
 }

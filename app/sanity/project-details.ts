@@ -1,22 +1,9 @@
 const defaultApiVersion = '2024-02-13';
 
-// Helper function to get environment variables across different contexts
-function getEnvVar(key: keyof ImportMetaEnv): string | undefined {
-  // Server-side (Node.js)
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env[key];
-  }
-
-  // Client-side with Vite
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env[key];
-  }
-
-  // Client-side with window.ENV (for server-side rendering)
-  if (typeof window !== 'undefined' && (window as any).ENV) {
+function getEnvVar(key: string): string | undefined {
+  if (typeof process !== 'undefined' && process.env) return process.env[key];
+  if (typeof window !== 'undefined' && (window as any).ENV)
     return (window as any).ENV[key];
-  }
-
   return undefined;
 }
 
@@ -24,7 +11,12 @@ function getEnvVar(key: keyof ImportMetaEnv): string | undefined {
 const projectId = getEnvVar('VITE_SANITY_PROJECT_ID');
 const dataset = getEnvVar('VITE_SANITY_DATASET');
 const apiVersion = getEnvVar('VITE_SANITY_API_VERSION') ?? defaultApiVersion;
-const studioUrl = getEnvVar('VITE_SANITY_STUDIO_URL');
+const studioUrl =
+  getEnvVar('VITE_SANITY_STUDIO_URL') ??
+  // Sensible dev default for `sanity dev` (default port + basePath in `sanity.config.ts`)
+  (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production'
+    ? 'http://localhost:5173/studio'
+    : undefined);
 
 // Validate required environment variables
 if (!projectId) {

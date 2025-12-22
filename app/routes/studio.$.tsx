@@ -1,9 +1,9 @@
 import { Studio } from 'sanity';
 
-import { Hydrated } from '../components/hydrated';
-import studio from '~/studio.css?url';
+import { Hydrated } from '@/components/features/sanity';
+import studio from '@/studio.css?url';
 
-import config from '../../sanity.config';
+import config from '@root/sanity.config';
 import { LinksFunction, MetaFunction } from 'react-router';
 
 export const meta: MetaFunction = () => [
