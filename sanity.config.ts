@@ -7,6 +7,7 @@ import { structure } from './app/sanity/structure';
 import { projectId, dataset, apiVersion } from './app/sanity/project-details';
 import { locations, mainDocuments } from './app/sanity/presentation/resolve';
 import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
+import { getPresentationAllowOrigins, getPreviewOrigin } from './app/deployment';
 import {
   SetVisibilityPublicAction,
   SetVisibilityHiddenAction,
@@ -19,27 +20,6 @@ import {
   SaveDraftBadge,
   VisibilityBadge,
 } from './app/sanity/studio/document-badges';
-
-function getPreviewOrigin(): string | undefined {
-  // Sanity CLI / Node
-  if (typeof process !== 'undefined' && process.env) {
-    return (
-      process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ??
-      process.env.SANITY_STUDIO_PREVIEW_ORIGIN ??
-      undefined
-    );
-  }
-
-  // Embedded Studio (Vite)
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    const env = import.meta.env as unknown as {
-      VITE_SANITY_STUDIO_PREVIEW_ORIGIN?: string;
-    };
-    return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ?? undefined;
-  }
-
-  return undefined;
-}
 
 export default defineConfig({
   projectId: projectId!,
@@ -54,10 +34,10 @@ export default defineConfig({
     structureTool({ structure }),
     visionTool(),
     presentationTool({
-      allowOrigins: ['http://localhost:*'],
+      allowOrigins: getPresentationAllowOrigins(),
       resolve: { locations, mainDocuments },
       previewUrl: {
-        origin: getPreviewOrigin() || 'http://localhost:5173',
+        origin: getPreviewOrigin(),
         preview: '/',
         previewMode: {
           enable: '/api/preview-mode/enable',

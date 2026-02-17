@@ -6,30 +6,12 @@ import {
   LockIcon,
   LaunchIcon,
 } from '@sanity/icons';
+import { getPreviewOrigin } from '@/deployment';
 import { resolveHref } from '@/components/features/sanity/helpers/resolve-href';
 
 type VisibilityValue = 'public' | 'hidden' | 'private';
 
 type DocumentActionProps = Parameters<DocumentActionComponent>[0];
-
-function getPreviewOrigin(): string {
-  if (typeof process !== 'undefined' && process.env) {
-    return (
-      process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ??
-      process.env.SANITY_STUDIO_PREVIEW_ORIGIN ??
-      'http://localhost:5173'
-    );
-  }
-
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    const env = import.meta.env as unknown as {
-      VITE_SANITY_STUDIO_PREVIEW_ORIGIN?: string;
-    };
-    return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ?? 'http://localhost:5173';
-  }
-
-  return 'http://localhost:5173';
-}
 
 function getCurrentVisibility(
   draft: DocumentActionProps['draft'],
