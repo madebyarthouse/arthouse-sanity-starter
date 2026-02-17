@@ -4,10 +4,10 @@ import { ComplexImage, NavLink } from '@/components/features/sanity';
 import { Container } from '@/components/ui';
 import { cleanString } from '@/components/features/sanity/helpers/stega';
 
-interface FooterProps {
+type FooterProps = {
   footer: FOOTER_QUERYResult | null;
   dataSanity?: string;
-}
+};
 
 function getSocialHref(
   social: NonNullable<NonNullable<FOOTER_QUERYResult>['socials']>[number]
@@ -95,23 +95,24 @@ export function Footer({ footer, dataSanity }: FooterProps) {
                   Follow Us
                 </h4>
                 <div className="flex space-x-4">
-                  {footer.socials.map((social, idx) =>
-                    (() => {
-                      const href = getSocialHref(social);
-                      if (!href) return null;
-                      return (
-                        <a
-                          key={idx}
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground/80 hover:text-foreground text-sm"
-                        >
-                          {getSocialLabel(social)}
-                        </a>
-                      );
-                    })()
-                  )}
+                  {footer.socials.map((social, idx) => {
+                    const href = getSocialHref(social);
+                    if (!href) {
+                      return null;
+                    }
+
+                    return (
+                      <a
+                        key={idx}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground/80 hover:text-foreground text-sm"
+                      >
+                        {getSocialLabel(social)}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             )}

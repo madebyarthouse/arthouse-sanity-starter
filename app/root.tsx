@@ -75,21 +75,45 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = 'Oops!';
-  let details = 'An unexpected error occurred.';
-  let stack: string | undefined;
+type RootErrorDetails = {
+  message: string;
+  details: string;
+  stack?: string;
+};
+
+function getErrorDetails(error: unknown): RootErrorDetails {
+  const fallbackDetails = 'An unexpected error occurred.';
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? '404' : 'Error';
-    details =
-      error.status === 404
-        ? 'The requested page could not be found.'
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    if (error.status === 404) {
+      return {
+        message: '404',
+        details: 'The requested page could not be found.',
+      };
+    }
+
+    return {
+      message: 'Error',
+      details: error.statusText || fallbackDetails,
+    };
   }
+
+  if (import.meta.env.DEV && error instanceof Error) {
+    return {
+      message: 'Oops!',
+      details: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    message: 'Oops!',
+    details: fallbackDetails,
+  };
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const { message, details, stack } = getErrorDetails(error);
 
   return (
     <main className="container mx-auto p-4 pt-16">

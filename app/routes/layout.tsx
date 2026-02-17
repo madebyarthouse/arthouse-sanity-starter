@@ -69,6 +69,26 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 type LayoutLoaderData = Route.ComponentProps['loaderData'];
 
+type LayoutErrorDetails = {
+  title: string;
+  description: string;
+  stack?: string;
+};
+
+function isLayoutLoaderData(value: unknown): value is LayoutLoaderData {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  return (
+    'preview' in value &&
+    'header' in value &&
+    'footer' in value &&
+    'siteSettings' in value &&
+    'themeSettings' in value
+  );
+}
+
 function getLayoutMatchData(
   matches: ReturnType<typeof useMatches>
 ): LayoutLoaderData | null {
@@ -84,7 +104,35 @@ function getLayoutMatchData(
     );
   });
 
-  return (match?.data as LayoutLoaderData | undefined) ?? null;
+  if (!isLayoutLoaderData(match?.data)) {
+    return null;
+  }
+
+  return match.data;
+}
+
+function getErrorDetails(error: unknown): LayoutErrorDetails {
+  const fallbackDescription = 'An unexpected error occurred.';
+
+  if (isRouteErrorResponse(error)) {
+    return {
+      title: error.status === 404 ? 'Page not found' : `Error ${error.status}`,
+      description: error.statusText || fallbackDescription,
+    };
+  }
+
+  if (import.meta.env.DEV && error instanceof Error) {
+    return {
+      title: 'Something went wrong',
+      description: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    title: 'Something went wrong',
+    description: fallbackDescription,
+  };
 }
 
 function SiteShell({
@@ -190,18 +238,7 @@ export default function SiteLayout({ loaderData }: Route.ComponentProps) {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const matches = useMatches();
   const loaderData = getLayoutMatchData(matches);
-
-  let title = 'Something went wrong';
-  let description = 'An unexpected error occurred.';
-  let stack: string | undefined;
-
-  if (isRouteErrorResponse(error)) {
-    title = error.status === 404 ? 'Page not found' : `Error ${error.status}`;
-    description = error.statusText || description;
-  } else if (import.meta.env.DEV && error instanceof Error) {
-    description = error.message;
-    stack = error.stack;
-  }
+  const { title, description, stack } = getErrorDetails(error);
 
   const content = (
     <div className="mx-auto max-w-[720px] py-16">

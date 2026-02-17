@@ -1,27 +1,64 @@
 import type { MetaDescriptor } from 'react-router';
-import type { SITE_SETTINGS_QUERYResult } from '@gen/sanity';
+import type { PAGE_QUERYResult, SITE_SETTINGS_QUERYResult } from '@gen/sanity';
 import { urlFor } from '@/lib/sanity-image';
 import { cleanString } from '@/components/features/sanity/helpers/stega';
 
 type Matches = ReadonlyArray<{ data?: unknown } | undefined>;
 
+type VisibilityValue = 'public' | 'hidden' | 'private';
+
+type PageMeta = NonNullable<NonNullable<PAGE_QUERYResult>['meta']>;
+type OgImageSource =
+  | NonNullable<PageMeta['ogImage']>
+  | NonNullable<
+      NonNullable<
+        NonNullable<SITE_SETTINGS_QUERYResult>['metaSettings']
+      >['defaultOgImage']
+    >;
+
 type MetaLike = {
   title?: string | null;
   description?: string | null;
   keywords?: Array<string | null> | null;
-  ogImage?: unknown | null;
+  ogImage?: OgImageSource | null;
 };
 
-type MetaSettingsLike = {
-  siteTitle?: string | null;
-  titleTemplate?: string | null;
-  defaultDescription?: string | null;
-  defaultKeywords?: Array<string | null> | null;
-  defaultOgImage?: unknown | null;
+type MatchSiteSettingsData = {
+  data?: SITE_SETTINGS_QUERYResult | null;
 };
 
 function joinKeywords(value: Array<string | null> | null | undefined): string {
   return (value ?? []).map(cleanString).filter(Boolean).join(', ');
+}
+
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isMatchSiteSettingsData(
+  value: unknown
+): value is MatchSiteSettingsData {
+  return isObjectRecord(value) && 'data' in value;
+}
+
+function extractSiteSettingsFromMatchData(
+  data: unknown
+): SITE_SETTINGS_QUERYResult | null | undefined {
+  if (!isObjectRecord(data)) {
+    return undefined;
+  }
+
+  const siteSettings = data.siteSettings;
+  if (!isMatchSiteSettingsData(siteSettings)) {
+    return undefined;
+  }
+
+  const siteSettingsData = siteSettings.data;
+  if (siteSettingsData === undefined) {
+    return undefined;
+  }
+
+  return siteSettingsData ?? null;
 }
 
 function formatTitle({
@@ -48,13 +85,16 @@ export function getSiteSettingsFromMatches(
   matches: Matches
 ): SITE_SETTINGS_QUERYResult | null {
   for (const match of matches) {
-    if (!match) continue;
-    const data = match.data as any;
-    const siteSettings = data?.siteSettings?.data;
+    if (!match) {
+      continue;
+    }
+
+    const siteSettings = extractSiteSettingsFromMatchData(match.data);
     if (siteSettings !== undefined) {
-      return (siteSettings ?? null) as SITE_SETTINGS_QUERYResult | null;
+      return siteSettings;
     }
   }
+
   return null;
 }
 
@@ -69,13 +109,12 @@ export function buildRouteMeta({
   matches: Matches;
   documentTitle?: string | null;
   meta?: MetaLike | null;
-  visibility?: 'public' | 'hidden' | 'private' | null;
+  visibility?: VisibilityValue | null;
   fallbackTitle: string;
   fallbackDescription: string;
 }): Array<MetaDescriptor> {
   const siteSettings = getSiteSettingsFromMatches(matches);
-  const metaSettings = (siteSettings?.metaSettings ??
-    null) as MetaSettingsLike | null;
+  const metaSettings = siteSettings?.metaSettings ?? null;
 
   const siteTitle = metaSettings?.siteTitle ?? null;
   const baseTitle =
@@ -100,8 +139,7 @@ export function buildRouteMeta({
     joinKeywords(meta?.keywords ?? null) ||
     joinKeywords(metaSettings?.defaultKeywords ?? null);
 
-  const ogSource =
-    (meta?.ogImage as any) ?? (metaSettings?.defaultOgImage as any);
+  const ogSource = meta?.ogImage ?? metaSettings?.defaultOgImage;
   const ogImageUrl = ogSource
     ? urlFor(ogSource).width(1200).height(630).fit('crop').auto('format').url()
     : null;

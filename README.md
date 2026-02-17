@@ -119,6 +119,14 @@ Places to update:
 - `.env.example` deployment defaults
 - `public/site.webmanifest` app name, icon paths, and colors
 
+Manifest fields that must be replaced:
+
+- `name`
+- `short_name`
+- every icon `src`
+- `theme_color`
+- `background_color`
+
 ## 🚢 Deployment
 
 Build the project for production:
@@ -128,6 +136,26 @@ pnpm run build
 ```
 
 The build artifacts will be stored in the `build/` directory.
+
+### Deployment origin configuration
+
+Use the deployment resolver variables in `.env`:
+
+- `DEPLOYMENT_TARGET` (`custom`, `vercel`, `cloudflare`)
+- `DEPLOYMENT_LOCAL_ORIGIN` (optional, runtime fallback defaults to `http://localhost:5173`)
+- `DEPLOYMENT_PRODUCTION_ORIGIN` (optional explicit canonical URL)
+- `DEPLOYMENT_PREVIEW_ORIGIN` (optional explicit preview override)
+
+Platform-specific vars:
+
+- Vercel: `VERCEL_URL`, `VERCEL_ENV`
+- Cloudflare Pages: `CF_PAGES_URL`
+
+Target mode setup:
+
+1. `custom`: set explicit `DEPLOYMENT_PRODUCTION_ORIGIN` and optionally `DEPLOYMENT_PREVIEW_ORIGIN`.
+2. `vercel`: set `DEPLOYMENT_TARGET=vercel`, expose `VERCEL_URL` and `VERCEL_ENV`, and optionally override with explicit deployment origins.
+3. `cloudflare`: set `DEPLOYMENT_TARGET=cloudflare`, expose `CF_PAGES_URL`, and optionally override with explicit deployment origins.
 
 For Sanity Studio deployment:
 

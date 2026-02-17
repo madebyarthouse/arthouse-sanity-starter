@@ -26,6 +26,26 @@ type Props = {
   className?: string;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>;
 
+function getInternalLinkTarget(link: NavLinkValue): string | null {
+  const source = cleanString(link.source);
+
+  if (source === 'staticLink' && link.staticLink?.url) {
+    const rawUrl = cleanString(link.staticLink.url) ?? link.staticLink.url;
+    return cleanString(rawUrl) ?? rawUrl;
+  }
+
+  if (source === 'new' && link.reference) {
+    const resolvedHref = resolveHref(link.reference);
+    if (!resolvedHref) {
+      return null;
+    }
+
+    return cleanString(resolvedHref) ?? resolvedHref;
+  }
+
+  return null;
+}
+
 export function NavLink({ link, className, children, ...rest }: Props) {
   if (!link) return null;
 
@@ -37,17 +57,9 @@ export function NavLink({ link, className, children, ...rest }: Props) {
   if (!label) return null;
 
   if (link.type === 'internal') {
-    let to: string | null = null;
-
-    const source = cleanString(link.source);
-
-    if (source === 'staticLink' && link.staticLink?.url) {
-      to = cleanString(link.staticLink.url) ?? link.staticLink.url;
-    } else if (source === 'new' && link.reference) {
-      to = resolveHref(link.reference);
-    }
+    const to = getInternalLinkTarget(link);
     if (!to) return null;
-    to = cleanString(to) ?? to;
+
     return (
       <Link to={to} className={className} {...rest}>
         {label}
