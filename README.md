@@ -110,6 +110,15 @@ This starter leverages React Router 7's powerful features:
 
 See `.env.example` for the full list of required variables.
 
+## Starter Placeholders
+
+Search for `change me` and replace all placeholders before shipping.
+
+Places to update:
+
+- `.env.example` deployment defaults
+- `public/site.webmanifest` app name, icon paths, and colors
+
 ## 🚢 Deployment
 
 Build the project for production:

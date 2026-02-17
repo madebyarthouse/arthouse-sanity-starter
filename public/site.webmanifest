@@ -1,21 +1,21 @@
 {
-  "name": "Awareness Agentur",
-  "short_name": "Awareness",
+  "name": "change me",
+  "short_name": "change me",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "change me",
+      "sizes": "change me",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "change me"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
-      "sizes": "512x512",
+      "src": "change me",
+      "sizes": "change me",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "change me"
     }
   ],
-  "theme_color": "#2563eb",
-  "background_color": "#ffffff",
+  "theme_color": "change me",
+  "background_color": "change me",
   "display": "standalone"
 }
