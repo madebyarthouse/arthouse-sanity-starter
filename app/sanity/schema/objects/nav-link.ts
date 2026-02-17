@@ -28,11 +28,50 @@ export const navLink = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'source',
+      title: 'Internal source',
+      type: 'string',
+      initialValue: 'new',
+      options: {
+        list: [
+          { title: 'Reference', value: 'new' },
+          { title: 'Static link', value: 'staticLink' },
+        ],
+      },
+      hidden: ({ parent }) => parent?.type !== 'internal',
+    }),
+    defineField({
+      name: 'staticLink',
+      title: 'Static link',
+      type: 'reference',
+      to: [{ type: 'staticLink' }],
+      options: {
+        filter: 'type == "internal"',
+      },
+      hidden: ({ parent }) =>
+        parent?.type !== 'internal' || parent?.source !== 'staticLink',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { type?: string; source?: string };
+          if (parent?.type !== 'internal' || parent?.source !== 'staticLink')
+            return true;
+          return value ? true : 'This field is required';
+        }),
+    }),
+    defineField({
       name: 'reference',
       title: l.fields.reference.title,
       type: 'reference',
       to: [{ type: 'page' }],
-      hidden: ({ parent }) => parent?.type !== 'internal',
+      hidden: ({ parent }) =>
+        parent?.type !== 'internal' || parent?.source !== 'new',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { type?: string; source?: string };
+          if (parent?.type !== 'internal' || parent?.source !== 'new')
+            return true;
+          return value ? true : 'This field is required';
+        }),
     }),
     defineField({
       name: 'externalLink',
@@ -45,11 +84,17 @@ export const navLink = defineType({
     select: {
       title: 'title',
       type: 'type',
+      source: 'source',
+      staticLinkUrl: 'staticLink.url',
     },
-    prepare({ title, type }) {
+    prepare({ title, type, source, staticLinkUrl }) {
+      const subtitleParts = [type];
+      if (type === 'internal' && source === 'staticLink' && staticLinkUrl) {
+        subtitleParts.push(staticLinkUrl);
+      }
       return {
         title,
-        subtitle: type,
+        subtitle: subtitleParts.join(' • '),
       };
     },
   },

@@ -2,10 +2,35 @@ import type { FOOTER_QUERYResult } from '@gen/sanity';
 import { Link } from 'react-router';
 import { ComplexImage, NavLink } from '@/components/features/sanity';
 import { Container } from '@/components/ui';
+import { cleanString } from '@/components/features/sanity/helpers/stega';
 
 interface FooterProps {
   footer: FOOTER_QUERYResult | null;
   dataSanity?: string;
+}
+
+function getSocialHref(
+  social: NonNullable<NonNullable<FOOTER_QUERYResult>['socials']>[number]
+): string | undefined {
+  const source = cleanString(social.source);
+  const raw =
+    source === 'staticLink'
+      ? (social.staticLink?.url ?? undefined)
+      : (social.url ?? undefined);
+  if (!raw) return undefined;
+  return cleanString(raw) ?? raw;
+}
+
+function getSocialLabel(
+  social: NonNullable<NonNullable<FOOTER_QUERYResult>['socials']>[number]
+): string {
+  const source = cleanString(social.source);
+  if (source === 'staticLink') {
+    const titleRaw = social.staticLink?.title || 'SOCIAL';
+    return cleanString(titleRaw) ?? titleRaw;
+  }
+  const platformRaw = social.platform || 'SOCIAL';
+  return (cleanString(platformRaw) ?? platformRaw).toUpperCase();
 }
 
 export function Footer({ footer, dataSanity }: FooterProps) {
@@ -14,7 +39,10 @@ export function Footer({ footer, dataSanity }: FooterProps) {
   }
 
   return (
-    <footer className="border-border bg-muted border-t" data-sanity={dataSanity}>
+    <footer
+      className="border-border bg-muted border-t"
+      data-sanity={dataSanity}
+    >
       <Container className="py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
@@ -67,17 +95,23 @@ export function Footer({ footer, dataSanity }: FooterProps) {
                   Follow Us
                 </h4>
                 <div className="flex space-x-4">
-                  {footer.socials.map((social, idx) => (
-                    <a
-                      key={idx}
-                      href={social.url || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground/80 hover:text-foreground text-sm"
-                    >
-                      {social.platform}
-                    </a>
-                  ))}
+                  {footer.socials.map((social, idx) =>
+                    (() => {
+                      const href = getSocialHref(social);
+                      if (!href) return null;
+                      return (
+                        <a
+                          key={idx}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground/80 hover:text-foreground text-sm"
+                        >
+                          {getSocialLabel(social)}
+                        </a>
+                      );
+                    })()
+                  )}
                 </div>
               </div>
             )}

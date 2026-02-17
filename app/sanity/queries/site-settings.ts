@@ -1,5 +1,7 @@
 import groq, { defineQuery } from 'groq';
 import { complexImageStub } from '@/sanity/queries/stubs/complex-image';
+import { ctaLinkStub } from '@/sanity/queries/stubs/cta-link';
+import { socialLinkStub } from '@/sanity/queries/stubs/social-link';
 
 export const SITE_SETTINGS_QUERY = defineQuery(groq`
   *[_type == "siteSettings"][0]{
@@ -17,7 +19,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(groq`
       asset->{_id, url}
     },
     ogVisual{${complexImageStub}},
-    socials[]{platform, url},
+    socials[]{${socialLinkStub}},
+    contactCta{${ctaLinkStub}},
     privacyPolicy->{_id, _type, title, slug, meta{visibility}},
     imprint->{_id, _type, title, slug, meta{visibility}},
     analytics{

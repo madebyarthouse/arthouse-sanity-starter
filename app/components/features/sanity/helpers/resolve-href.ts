@@ -5,6 +5,7 @@ type PageLike = {
   _ref?: string | null;
   _type?: string | null;
   slug?: { current?: string | null } | null;
+  staticRoute?: string | null;
 };
 
 const SETTINGS_IDS = new Set([
@@ -22,6 +23,11 @@ export function resolveHref(
   reference: PageLike | null | undefined
 ): string | null {
   if (!reference) return null;
+
+  if (reference.staticRoute) {
+    return reference.staticRoute;
+  }
+
   const id =
     cleanString(reference._id) ??
     cleanString(reference._ref) ??

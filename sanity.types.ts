@@ -87,6 +87,7 @@ export type SiteSettings = {
       _key: string;
     } & SocialLink
   >;
+  contactCta?: CtaLink;
   privacyPolicy?: {
     _ref: string;
     _type: 'reference';
@@ -180,6 +181,13 @@ export type MetaSettings = {
 
 export type SocialLink = {
   _type: 'socialLink';
+  source?: 'new' | 'staticLink';
+  staticLink?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'staticLink';
+  };
   platform?:
     | 'facebook'
     | 'instagram'
@@ -199,6 +207,13 @@ export type CtaLink = {
   _type: 'ctaLink';
   type?: 'internal' | 'external';
   label?: string;
+  source?: 'new' | 'staticLink';
+  staticLink?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'staticLink';
+  };
   internalLink?: {
     _ref: string;
     _type: 'reference';
@@ -212,6 +227,13 @@ export type NavLink = {
   _type: 'navLink';
   type?: 'internal' | 'external';
   title?: string;
+  source?: 'new' | 'staticLink';
+  staticLink?: {
+    _ref: string;
+    _type: 'reference';
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: 'staticLink';
+  };
   reference?: {
     _ref: string;
     _type: 'reference';
@@ -219,6 +241,17 @@ export type NavLink = {
     [internalGroqTypeReferenceTo]?: 'page';
   };
   externalLink?: MarkExternalLink;
+};
+
+export type StaticLink = {
+  _id: string;
+  _type: 'staticLink';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  type?: 'internal' | 'external';
+  url?: string;
 };
 
 export type RichText = Array<
@@ -459,6 +492,7 @@ export type AllSanitySchemaTypes =
   | SocialLink
   | CtaLink
   | NavLink
+  | StaticLink
   | RichText
   | MarkInternalLink
   | Page
@@ -515,7 +549,7 @@ export type ANALYTICS_QUERYResult = {
 
 // Source: ./app/sanity/queries/footer.ts
 // Variable: FOOTER_QUERY
-// Query: *[_type == "footer"][0]{    _id,    _type,    logo{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    mainNav[]{      type,      title,      reference->{        _id,        _type,        slug      },      externalLink{        type,        url,        email,        phone,        "fileUrl": file.asset->url      }    },    secondaryNav[]{      type,      title,      reference->{        _id,        _type,        slug      },      externalLink{        type,        url,        email,        phone,        "fileUrl": file.asset->url      }    },    socials[]{platform, url}  }
+// Query: *[_type == "footer"][0]{    _id,    _type,    logo{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    mainNav[]{  type,  title,  source,  staticLink->{    _id,    _type,    title,    type,    url  },  reference->{    _id,    _type,    slug  },  externalLink{    type,    url,    email,    phone,    "fileUrl": file.asset->url  }},    secondaryNav[]{  type,  title,  source,  staticLink->{    _id,    _type,    title,    type,    url  },  reference->{    _id,    _type,    slug  },  externalLink{    type,    url,    email,    phone,    "fileUrl": file.asset->url  }},    socials[]{  source,  staticLink->{    _id,    _type,    title,    type,    url  },  platform,  url}  }
 export type FOOTER_QUERYResult = {
   _id: string;
   _type: 'footer';
@@ -538,6 +572,14 @@ export type FOOTER_QUERYResult = {
   mainNav: Array<{
     type: 'external' | 'internal' | null;
     title: string | null;
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
     reference: {
       _id: string;
       _type: 'page';
@@ -554,6 +596,14 @@ export type FOOTER_QUERYResult = {
   secondaryNav: Array<{
     type: 'external' | 'internal' | null;
     title: string | null;
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
     reference: {
       _id: string;
       _type: 'page';
@@ -568,6 +618,14 @@ export type FOOTER_QUERYResult = {
     } | null;
   }> | null;
   socials: Array<{
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
     platform:
       | 'facebook'
       | 'instagram'
@@ -587,7 +645,7 @@ export type FOOTER_QUERYResult = {
 
 // Source: ./app/sanity/queries/header.ts
 // Variable: HEADER_QUERY
-// Query: *[_type == "header"][0]{    _id,    _type,    logo{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    nav[]{      type,      title,      reference->{        _id,        _type,        slug      },      externalLink{        type,        url,        email,        phone,        "fileUrl": file.asset->url      }    }  }
+// Query: *[_type == "header"][0]{    _id,    _type,    logo{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    nav[]{  type,  title,  source,  staticLink->{    _id,    _type,    title,    type,    url  },  reference->{    _id,    _type,    slug  },  externalLink{    type,    url,    email,    phone,    "fileUrl": file.asset->url  }}  }
 export type HEADER_QUERYResult = {
   _id: string;
   _type: 'header';
@@ -610,6 +668,14 @@ export type HEADER_QUERYResult = {
   nav: Array<{
     type: 'external' | 'internal' | null;
     title: string | null;
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
     reference: {
       _id: string;
       _type: 'page';
@@ -991,7 +1057,7 @@ export type PAGE_QUERYResult = {
 
 // Source: ./app/sanity/queries/site-settings.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0]{    _id,    _type,    metaSettings{      siteTitle,      titleTemplate,      defaultDescription,      defaultKeywords,      defaultOgImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }}    },    favicon{      ...,      asset->{_id, url}    },    ogVisual{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    socials[]{platform, url},    privacyPolicy->{_id, _type, title, slug, meta{visibility}},    imprint->{_id, _type, title, slug, meta{visibility}},    analytics{      enabled,      consentBanner{        headline,        description,        acceptAllLabel,        rejectAllLabel,        manageLabel,        saveLabel      },      consentCategories[]{        key,        label,        description,        required      },      plausible{        enabled,        domain,        proxyEnabled,        selfHostedUrl      },      posthog{        enabled,        projectKey,        host,        proxyEnabled      }    }  }
+// Query: *[_type == "siteSettings"][0]{    _id,    _type,    metaSettings{      siteTitle,      titleTemplate,      defaultDescription,      defaultKeywords,      defaultOgImage{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }}    },    favicon{      ...,      asset->{_id, url}    },    ogVisual{  alt,  caption,  width,  asset{    crop,    hotspot,    asset,    "lqip": asset->metadata.lqip  }},    socials[]{  source,  staticLink->{    _id,    _type,    title,    type,    url  },  platform,  url},    contactCta{  type,  label,  source,  staticLink->{    _id,    _type,    title,    type,    url  },  internalLink->{    _id,    _type,    slug  },  externalLink{    type,    url,    email,    phone,    "fileUrl": file.asset->url  }},    privacyPolicy->{_id, _type, title, slug, meta{visibility}},    imprint->{_id, _type, title, slug, meta{visibility}},    analytics{      enabled,      consentBanner{        headline,        description,        acceptAllLabel,        rejectAllLabel,        manageLabel,        saveLabel      },      consentCategories[]{        key,        label,        description,        required      },      plausible{        enabled,        domain,        proxyEnabled,        selfHostedUrl      },      posthog{        enabled,        projectKey,        host,        proxyEnabled      }    }  }
 export type SITE_SETTINGS_QUERYResult = {
   _id: string;
   _type: 'siteSettings';
@@ -1044,6 +1110,14 @@ export type SITE_SETTINGS_QUERYResult = {
     } | null;
   } | null;
   socials: Array<{
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
     platform:
       | 'facebook'
       | 'instagram'
@@ -1059,6 +1133,30 @@ export type SITE_SETTINGS_QUERYResult = {
       | null;
     url: string | null;
   }> | null;
+  contactCta: {
+    type: 'external' | 'internal' | null;
+    label: string | null;
+    source: 'new' | 'staticLink' | null;
+    staticLink: {
+      _id: string;
+      _type: 'staticLink';
+      title: string | null;
+      type: 'external' | 'internal' | null;
+      url: string | null;
+    } | null;
+    internalLink: {
+      _id: string;
+      _type: 'page';
+      slug: Slug | null;
+    } | null;
+    externalLink: {
+      type: 'email' | 'file' | 'phone' | 'url' | null;
+      url: string | null;
+      email: string | null;
+      phone: string | null;
+      fileUrl: string | null;
+    } | null;
+  } | null;
   privacyPolicy: {
     _id: string;
     _type: 'page';
@@ -1132,11 +1230,11 @@ import '@sanity/client';
 declare module '@sanity/client' {
   interface SanityQueries {
     '\n  *[_type == "siteSettings"][0]{\n    analytics{\n      enabled,\n      consentBanner{\n        headline,\n        description,\n        acceptAllLabel,\n        rejectAllLabel,\n        manageLabel,\n        saveLabel\n      },\n      consentCategories[]{\n        key,\n        label,\n        description,\n        required\n      },\n      plausible{\n        enabled,\n        domain,\n        proxyEnabled,\n        selfHostedUrl\n      },\n      posthog{\n        enabled,\n        projectKey,\n        host,\n        proxyEnabled\n      }\n    }\n  }\n': ANALYTICS_QUERYResult;
-    '\n  *[_type == "footer"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    mainNav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    },\n    secondaryNav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    },\n    socials[]{platform, url}\n  }\n': FOOTER_QUERYResult;
-    '\n  *[_type == "header"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    nav[]{\n      type,\n      title,\n      reference->{\n        _id,\n        _type,\n        slug\n      },\n      externalLink{\n        type,\n        url,\n        email,\n        phone,\n        "fileUrl": file.asset->url\n      }\n    }\n  }\n': HEADER_QUERYResult;
+    '\n  *[_type == "footer"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    mainNav[]{\n  type,\n  title,\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  reference->{\n    _id,\n    _type,\n    slug\n  },\n  externalLink{\n    type,\n    url,\n    email,\n    phone,\n    "fileUrl": file.asset->url\n  }\n},\n    secondaryNav[]{\n  type,\n  title,\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  reference->{\n    _id,\n    _type,\n    slug\n  },\n  externalLink{\n    type,\n    url,\n    email,\n    phone,\n    "fileUrl": file.asset->url\n  }\n},\n    socials[]{\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  platform,\n  url\n}\n  }\n': FOOTER_QUERYResult;
+    '\n  *[_type == "header"][0]{\n    _id,\n    _type,\n    logo{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    nav[]{\n  type,\n  title,\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  reference->{\n    _id,\n    _type,\n    slug\n  },\n  externalLink{\n    type,\n    url,\n    email,\n    phone,\n    "fileUrl": file.asset->url\n  }\n}\n  }\n': HEADER_QUERYResult;
     '\n  *[_type == "page" && _id == "homepage"][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n},\n    components[]{\n      title,\n      body[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n}\n    }\n  }\n': HOMEPAGE_QUERYResult;
     '\n  *[_type == "page" && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    meta{\n      title,\n      description,\n      keywords,\n      ogImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n      visibility\n    },\n    contentMode,\n    richText[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n},\n    components[]{\n      title,\n      body[]{\n  ...,\n  "markDefs": coalesce(markDefs, [])[]{\n    ...,\n    link->{\n      _id,\n      _type,\n      slug\n    }\n  }\n}\n    }\n  }\n': PAGE_QUERYResult;
-    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    metaSettings{\n      siteTitle,\n      titleTemplate,\n      defaultDescription,\n      defaultKeywords,\n      defaultOgImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n}\n    },\n    favicon{\n      ...,\n      asset->{_id, url}\n    },\n    ogVisual{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    socials[]{platform, url},\n    privacyPolicy->{_id, _type, title, slug, meta{visibility}},\n    imprint->{_id, _type, title, slug, meta{visibility}},\n    analytics{\n      enabled,\n      consentBanner{\n        headline,\n        description,\n        acceptAllLabel,\n        rejectAllLabel,\n        manageLabel,\n        saveLabel\n      },\n      consentCategories[]{\n        key,\n        label,\n        description,\n        required\n      },\n      plausible{\n        enabled,\n        domain,\n        proxyEnabled,\n        selfHostedUrl\n      },\n      posthog{\n        enabled,\n        projectKey,\n        host,\n        proxyEnabled\n      }\n    }\n  }\n': SITE_SETTINGS_QUERYResult;
+    '\n  *[_type == "siteSettings"][0]{\n    _id,\n    _type,\n    metaSettings{\n      siteTitle,\n      titleTemplate,\n      defaultDescription,\n      defaultKeywords,\n      defaultOgImage{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n}\n    },\n    favicon{\n      ...,\n      asset->{_id, url}\n    },\n    ogVisual{\n  alt,\n  caption,\n  width,\n  asset{\n    crop,\n    hotspot,\n    asset,\n    "lqip": asset->metadata.lqip\n  }\n},\n    socials[]{\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  platform,\n  url\n},\n    contactCta{\n  type,\n  label,\n  source,\n  staticLink->{\n    _id,\n    _type,\n    title,\n    type,\n    url\n  },\n  internalLink->{\n    _id,\n    _type,\n    slug\n  },\n  externalLink{\n    type,\n    url,\n    email,\n    phone,\n    "fileUrl": file.asset->url\n  }\n},\n    privacyPolicy->{_id, _type, title, slug, meta{visibility}},\n    imprint->{_id, _type, title, slug, meta{visibility}},\n    analytics{\n      enabled,\n      consentBanner{\n        headline,\n        description,\n        acceptAllLabel,\n        rejectAllLabel,\n        manageLabel,\n        saveLabel\n      },\n      consentCategories[]{\n        key,\n        label,\n        description,\n        required\n      },\n      plausible{\n        enabled,\n        domain,\n        proxyEnabled,\n        selfHostedUrl\n      },\n      posthog{\n        enabled,\n        projectKey,\n        host,\n        proxyEnabled\n      }\n    }\n  }\n': SITE_SETTINGS_QUERYResult;
     '\n  *[\n    _type == "page" &&\n    (meta.visibility == "public" || !defined(meta.visibility))\n  ]{\n    "url": select(\n      _id == "homepage" => "/",\n      defined(slug.current) => "/" + slug.current,\n      null\n    ),\n    _updatedAt\n  }[defined(url)]\n': SITEMAP_QUERYResult;
     '\n  *[_type == "themeSettings"][0]{\n    _id,\n    _type,\n    brandColor,\n    textColor,\n    backgroundColor\n  }\n': THEME_SETTINGS_QUERYResult;
   }

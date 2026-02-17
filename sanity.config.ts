@@ -7,6 +7,18 @@ import { structure } from './app/sanity/structure';
 import { projectId, dataset, apiVersion } from './app/sanity/project-details';
 import { locations, mainDocuments } from './app/sanity/presentation/resolve';
 import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
+import {
+  SetVisibilityPublicAction,
+  SetVisibilityHiddenAction,
+  SetVisibilityPrivateAction,
+  OpenLivePageAction,
+  OpenPageAction,
+  createSaveAction,
+} from './app/sanity/studio/document-actions';
+import {
+  SaveDraftBadge,
+  VisibilityBadge,
+} from './app/sanity/studio/document-badges';
 
 function getPreviewOrigin(): string | undefined {
   // Sanity CLI / Node
@@ -57,5 +69,38 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    actions: (prev, context) => {
+      const { schemaType } = context;
+
+      if (schemaType === 'page') {
+        return prev
+          .map((action) => {
+            if (action.action === 'publish') {
+              return createSaveAction(action);
+            }
+            return action;
+          })
+          .concat([
+            OpenPageAction,
+            SetVisibilityPublicAction,
+            SetVisibilityHiddenAction,
+            SetVisibilityPrivateAction,
+          ]);
+      }
+
+      return [...prev, OpenLivePageAction];
+    },
+    badges: (prev, context) => {
+      const { schemaType } = context;
+
+      if (schemaType === 'page') {
+        return [SaveDraftBadge, VisibilityBadge];
+      }
+
+      return [SaveDraftBadge];
+    },
   },
 });

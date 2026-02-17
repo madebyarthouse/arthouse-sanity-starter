@@ -40,6 +40,12 @@ export const siteSettings = defineType({
       of: [{ type: 'socialLink' }],
     }),
     defineField({
+      name: 'contactCta',
+      title: 'Contact CTA',
+      type: 'ctaLink',
+      group: 'general',
+    }),
+    defineField({
       name: 'privacyPolicy',
       title: l.fields.privacyPolicy.title,
       type: 'reference',
