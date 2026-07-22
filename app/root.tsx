@@ -1,4 +1,5 @@
 import {
+  data,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -11,7 +12,12 @@ import {
 import type { Route } from './+types/root';
 import { getServerConfig } from '@/config';
 import { previewContext } from '@/sanity/preview';
+import { getCacheControlHeader } from '@/lib/cache';
 import './app.css';
+
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') || '',
+});
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { preview } = await previewContext(request.headers);
@@ -25,20 +31,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const config = getServerConfig();
 
-  return { preview, ENV, config };
+  return data(
+    { preview, ENV, config },
+    {
+      headers: {
+        'Cache-Control': getCacheControlHeader(preview),
+      },
+    }
+  );
 }
 
 export const links: Route.LinksFunction = () => [
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-  {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
-  },
-  {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-  },
+  // Intentionally empty in starter mode.
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -71,21 +75,45 @@ export default function App() {
   return <Outlet />;
 }
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = 'Oops!';
-  let details = 'An unexpected error occurred.';
-  let stack: string | undefined;
+type RootErrorDetails = {
+  message: string;
+  details: string;
+  stack?: string;
+};
+
+function getErrorDetails(error: unknown): RootErrorDetails {
+  const fallbackDetails = 'An unexpected error occurred.';
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? '404' : 'Error';
-    details =
-      error.status === 404
-        ? 'The requested page could not be found.'
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    if (error.status === 404) {
+      return {
+        message: '404',
+        details: 'The requested page could not be found.',
+      };
+    }
+
+    return {
+      message: 'Error',
+      details: error.statusText || fallbackDetails,
+    };
   }
+
+  if (import.meta.env.DEV && error instanceof Error) {
+    return {
+      message: 'Oops!',
+      details: error.message,
+      stack: error.stack,
+    };
+  }
+
+  return {
+    message: 'Oops!',
+    details: fallbackDetails,
+  };
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const { message, details, stack } = getErrorDetails(error);
 
   return (
     <main className="container mx-auto p-4 pt-16">

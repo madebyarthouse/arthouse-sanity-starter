@@ -20,6 +20,7 @@ export const structure: StructureResolver = (S) => {
     'themeSettings',
     'header',
     'footer',
+    'staticLink',
   ];
 
   const singletonIds = {
@@ -111,6 +112,12 @@ export const structure: StructureResolver = (S) => {
                     .documentId(singletonIds.footer)
                     .title(l.footer.title)
                 ),
+
+              S.listItem()
+                .id('staticLinks')
+                .title('Static Links')
+                .icon(ComposeIcon)
+                .child(S.documentTypeList('staticLink').title('Static Links')),
             ])
         ),
 

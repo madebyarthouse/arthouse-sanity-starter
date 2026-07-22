@@ -1,49 +1,66 @@
 import type { Route } from './+types/page.$slug';
 import type { PAGE_QUERYResult } from '@gen/sanity';
 import { useQuery } from '@/sanity/loader';
-import { stegaClean } from '@sanity/client/stega';
-import { Link, useParams } from 'react-router';
+import { Link, useParams, data } from 'react-router';
 import { loadQuery } from '@/sanity/loader.server';
 import { previewContext } from '@/sanity/preview';
 import { PAGE_QUERY } from '@/sanity/queries';
 import { PageBuilder, RichText } from '@/components/features/sanity';
+import { buildRouteMeta } from '@/lib/seo';
+import { cleanString } from '@/components/features/sanity/helpers/stega';
+import { getCacheControlHeader } from '@/lib/cache';
 
 function cleanVisibility(value: string | null | undefined) {
-  return value ? stegaClean(value) : undefined;
+  return cleanString(value);
 }
 
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') || '',
+});
+
 export async function loader({ request, params }: Route.LoaderArgs) {
-  const { options } = await previewContext(request.headers);
-  const data = await loadQuery<PAGE_QUERYResult | null>(
+  const { preview, options } = await previewContext(request.headers);
+  const result = await loadQuery<PAGE_QUERYResult | null>(
     PAGE_QUERY,
     { slug: params.slug },
     options
   );
 
-  const visibility = cleanVisibility(data.data?.meta?.visibility);
-  if (!data.data || visibility === 'private') {
+  const visibility = cleanVisibility(result.data?.meta?.visibility);
+  if (!result.data || visibility === 'private') {
     throw new Response('Not found', { status: 404 });
   }
 
-  return { page: data };
+  return data(
+    { page: result },
+    {
+      headers: {
+        'Cache-Control': getCacheControlHeader(preview),
+      },
+    }
+  );
 }
 
-export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
+export function meta({
+  loaderData,
+  matches,
+}: Route.MetaArgs): Route.MetaDescriptors {
   const page = loaderData.page.data;
   const visibility = cleanVisibility(page?.meta?.visibility);
-  const tags: Route.MetaDescriptors = [
-    { title: page?.title ? `${page.title} - Arthouse` : 'Page - Arthouse' },
-    {
-      name: 'description',
-      content: page?.meta?.description || page?.title || 'Page',
-    },
-    {
-      name: 'robots',
-      content: visibility === 'hidden' ? 'noindex,follow' : 'index,follow',
-    },
-  ];
 
-  return tags;
+  return buildRouteMeta({
+    matches,
+    documentTitle: page?.title,
+    meta: page?.meta ?? null,
+    visibility:
+      visibility === 'public' ||
+      visibility === 'hidden' ||
+      visibility === 'private'
+        ? visibility
+        : null,
+    fallbackTitle: 'Page',
+    fallbackDescription: 'Page',
+  });
 }
 
 export default function PageRoute({ loaderData }: Route.ComponentProps) {
@@ -65,6 +82,19 @@ export default function PageRoute({ loaderData }: Route.ComponentProps) {
     );
   }
 
+  const contentMode = page.contentMode
+    ? (cleanString(page.contentMode) ?? page.contentMode)
+    : null;
+  const title = cleanString(page.title) ?? page.title ?? 'Untitled';
+
+  if (contentMode === 'pageBuilder') {
+    return (
+      <div data-sanity={encodeDataAttribute(['components'])}>
+        <PageBuilder value={page.components} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-8">
@@ -72,26 +102,18 @@ export default function PageRoute({ loaderData }: Route.ComponentProps) {
           ← Back home
         </Link>
       </div>
-
       <div className="border-border bg-background rounded-lg border p-8">
         <h1
           className="mb-6 text-4xl font-bold"
           data-sanity={encodeDataAttribute(['title'])}
         >
-          {page.title || 'Untitled'}
+          {title}
         </h1>
-
-        <div className="prose max-w-none">
-          {(page.contentMode ? stegaClean(page.contentMode) : null) ===
-          'pageBuilder' ? (
-            <div data-sanity={encodeDataAttribute(['components'])}>
-              <PageBuilder value={page.components} />
-            </div>
-          ) : (
-            <div data-sanity={encodeDataAttribute(['richText'])}>
-              <RichText value={page.richText} />
-            </div>
-          )}
+        <div
+          className="prose max-w-none"
+          data-sanity={encodeDataAttribute(['richText'])}
+        >
+          <RichText value={page.richText} />
         </div>
       </div>
     </div>

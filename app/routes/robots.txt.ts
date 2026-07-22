@@ -1,10 +1,8 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { getServerConfig } from '@/config';
+import { getRequestBaseOrigin } from '@/deployment';
 
 function getBaseUrl(request: Request): string {
-  if (process.env.SITE_URL || process.env.PRODUCTION_URL)
-    return getServerConfig().productionUrl;
-  return new URL(request.url).origin;
+  return getRequestBaseOrigin({ requestUrl: request.url });
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {

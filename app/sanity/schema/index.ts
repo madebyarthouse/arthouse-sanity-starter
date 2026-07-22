@@ -15,6 +15,7 @@ import { footer } from '@/sanity/schema/documents/footer';
 import { header } from '@/sanity/schema/documents/header';
 import { page } from '@/sanity/schema/documents/page';
 import { siteSettings } from '@/sanity/schema/documents/site-settings';
+import { staticLink } from '@/sanity/schema/documents/static-link';
 import { themeSettings } from '@/sanity/schema/documents/theme-settings';
 
 export const schemaTypes = [
@@ -38,4 +39,5 @@ export const schemaTypes = [
   header,
   footer,
   page,
+  staticLink,
 ];

@@ -1,6 +1,6 @@
-export const navLinkStub = `
+export const ctaLinkStub = `
   type,
-  title,
+  label,
   source,
   staticLink->{
     _id,
@@ -9,7 +9,7 @@ export const navLinkStub = `
     type,
     url
   },
-  reference->{
+  internalLink->{
     _id,
     _type,
     slug

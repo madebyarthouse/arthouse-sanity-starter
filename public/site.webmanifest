@@ -1,0 +1,21 @@
+{
+  "name": "change me",
+  "short_name": "change me",
+  "icons": [
+    {
+      "src": "change me",
+      "sizes": "change me",
+      "type": "image/png",
+      "purpose": "change me"
+    },
+    {
+      "src": "change me",
+      "sizes": "change me",
+      "type": "image/png",
+      "purpose": "change me"
+    }
+  ],
+  "theme_color": "change me",
+  "background_color": "change me",
+  "display": "standalone"
+}

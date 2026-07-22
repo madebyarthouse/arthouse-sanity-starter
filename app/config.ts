@@ -1,13 +1,15 @@
+import { getProductionOrigin } from '@/deployment';
+
 // Server-side configuration - only use on the server
 export function getServerConfig() {
-  const siteUrl = process.env.SITE_URL ?? process.env.PRODUCTION_URL ?? '';
-  const normalizedSiteUrl = siteUrl ? siteUrl.replace(/\/$/, '') : '';
-  const host = normalizedSiteUrl ? new URL(normalizedSiteUrl).hostname : '';
+  const productionUrl = getProductionOrigin() ?? '';
+  const siteUrl = productionUrl;
+  const siteHost = siteUrl ? new URL(siteUrl).hostname : '';
 
   return {
-    siteUrl: normalizedSiteUrl,
-    siteHost: host,
-    productionUrl: normalizedSiteUrl,
+    siteUrl,
+    siteHost,
+    productionUrl,
   };
 }
 
