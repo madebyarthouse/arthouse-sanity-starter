@@ -6,6 +6,8 @@ const token =
   process.env.SANITY_READ_TOKEN ??
   undefined;
 
-setServerClient(client.withConfig({ token, useCdn: false }));
+// Published queries must use apicdn (useCdn: true). Keep the read token so
+// previewDrafts works; @sanity/react-loader forces useCdn: false for drafts.
+setServerClient(client.withConfig({ token, useCdn: true }));
 
 export { loadQuery };
