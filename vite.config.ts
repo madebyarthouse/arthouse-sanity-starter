@@ -6,7 +6,12 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths(), netlifyReactRouter()],
+  plugins: [
+    tailwindcss(),
+    reactRouter(),
+    tsconfigPaths(),
+    netlifyReactRouter({ excludedPaths: ['/api/event'] }),
+  ],
   resolve: {
     alias: {
       '~': path.resolve(__dirname, './app'),
