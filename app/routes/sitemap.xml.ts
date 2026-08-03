@@ -4,10 +4,10 @@ import { getServerConfig } from '@/config';
 import { loadQuery } from '@/sanity/loader.server';
 import { SITEMAP_QUERY } from '@/sanity/queries';
 
-function getBaseUrl(request: Request): string {
+function getBaseUrl(url: URL): string {
   if (process.env.SITE_URL || process.env.PRODUCTION_URL)
     return getServerConfig().productionUrl;
-  return new URL(request.url).origin;
+  return url.origin;
 }
 
 function escapeXml(value: string): string {
@@ -19,8 +19,8 @@ function escapeXml(value: string): string {
     .replaceAll("'", '&apos;');
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const baseUrl = getBaseUrl(request).replace(/\/$/, '');
+export async function loader({ url }: LoaderFunctionArgs) {
+  const baseUrl = getBaseUrl(url).replace(/\/$/, '');
 
   const { data } = await loadQuery<SITEMAP_QUERYResult>(
     SITEMAP_QUERY,

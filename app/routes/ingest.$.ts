@@ -3,7 +3,7 @@ import type { ANALYTICS_QUERYResult } from '@gen/sanity';
 import { loadQuery } from '@/sanity/loader.server';
 import { ANALYTICS_QUERY } from '@/sanity/queries';
 
-async function proxy(request: Request) {
+async function proxy(request: Request, url: URL) {
   if (process.env.NODE_ENV !== 'production') {
     return new Response('OK', { status: 200 });
   }
@@ -19,7 +19,6 @@ async function proxy(request: Request) {
     return new Response('OK', { status: 200 });
   }
 
-  const url = new URL(request.url);
   const isLocalhost =
     url.hostname === 'localhost' ||
     url.hostname === '127.0.0.1' ||
@@ -50,10 +49,10 @@ async function proxy(request: Request) {
   return new Response(res.body, { status: res.status, headers: resHeaders });
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  return proxy(request);
+export async function loader({ request, url }: LoaderFunctionArgs) {
+  return proxy(request, url);
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  return proxy(request);
+export async function action({ request, url }: ActionFunctionArgs) {
+  return proxy(request, url);
 }

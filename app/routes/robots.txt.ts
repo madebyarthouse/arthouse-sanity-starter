@@ -1,14 +1,14 @@
 import type { LoaderFunctionArgs } from 'react-router';
 import { getServerConfig } from '@/config';
 
-function getBaseUrl(request: Request): string {
+function getBaseUrl(url: URL): string {
   if (process.env.SITE_URL || process.env.PRODUCTION_URL)
     return getServerConfig().productionUrl;
-  return new URL(request.url).origin;
+  return url.origin;
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const baseUrl = getBaseUrl(request).replace(/\/$/, '');
+export async function loader({ url }: LoaderFunctionArgs) {
+  const baseUrl = getBaseUrl(url).replace(/\/$/, '');
 
   const body = [
     'User-agent: *',

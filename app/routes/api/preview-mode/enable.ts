@@ -20,6 +20,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   const { isValid, redirectTo = '/' } = await validatePreviewUrl(
     clientWithToken,
+    // The raw URL is required because Sanity validates the complete preview URL.
     request.url
   );
 
