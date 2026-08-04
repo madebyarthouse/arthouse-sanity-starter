@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { VisualEditing } from '@sanity/visual-editing/react-router';
 import { DisablePreviewMode } from '@/components/features/sanity/visual-editing/disable-preview-mode';
 import { createClient } from '@sanity/client';

@@ -1,9 +1,26 @@
 const defaultApiVersion = '2024-02-13';
+type RuntimeEnv = Record<string, string | undefined>;
+type WindowWithEnv = Window & { ENV?: RuntimeEnv };
 
 function getEnvVar(key: string): string | undefined {
-  if (typeof process !== 'undefined' && process.env) return process.env[key];
-  if (typeof window !== 'undefined' && (window as any).ENV)
-    return (window as any).ENV[key];
+  // Vite replaces process.env with {} in client bundles. Only return when the
+  // requested key is present so browser env fallbacks still get a chance.
+  if (typeof process !== 'undefined' && process.env) {
+    const value = process.env[key];
+    if (value) return value;
+  }
+
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const value = (import.meta.env as Record<string, string | undefined>)[key];
+    if (value) return value;
+  }
+
+  if (typeof window !== 'undefined') {
+    const windowEnv = (window as WindowWithEnv).ENV;
+    const value = windowEnv?.[key];
+    if (value) return value;
+  }
+
   return undefined;
 }
 

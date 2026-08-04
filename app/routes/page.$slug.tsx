@@ -2,18 +2,19 @@ import type { Route } from './+types/page.$slug';
 import type { PAGE_QUERYResult } from '@gen/sanity';
 import { useQuery } from '@/sanity/loader';
 import { stegaClean } from '@sanity/client/stega';
-import { Link, useParams } from 'react-router';
+import { data as routeData, Link, useParams } from 'react-router';
 import { loadQuery } from '@/sanity/loader.server';
 import { previewContext } from '@/sanity/preview';
 import { PAGE_QUERY } from '@/sanity/queries';
 import { PageBuilder, RichText } from '@/components/features/sanity';
+import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
 
 function cleanVisibility(value: string | null | undefined) {
   return value ? stegaClean(value) : undefined;
 }
 
 export async function loader({ request, params }: Route.LoaderArgs) {
-  const { options } = await previewContext(request.headers);
+  const { options, preview } = await previewContext(request.headers);
   const data = await loadQuery<PAGE_QUERYResult | null>(
     PAGE_QUERY,
     { slug: params.slug },
@@ -25,14 +26,25 @@ export async function loader({ request, params }: Route.LoaderArgs) {
     throw new Response('Not found', { status: 404 });
   }
 
-  return { page: data };
+  return routeData(
+    { page: data },
+    { headers: getDocumentCacheHeaders(preview) }
+  );
 }
+
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
+});
 
 export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
   const page = loaderData.page.data;
   const visibility = cleanVisibility(page?.meta?.visibility);
   const tags: Route.MetaDescriptors = [
-    { title: page?.title ? `${page.title} - Arthouse` : 'Page - Arthouse' },
+    {
+      title: page?.title
+        ? `${page.title} - Sanity Starter`
+        : 'Page - Sanity Starter',
+    },
     {
       name: 'description',
       content: page?.meta?.description || page?.title || 'Page',

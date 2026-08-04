@@ -1,4 +1,5 @@
 import {
+  data as routeData,
   isRouteErrorResponse,
   Links,
   Meta,
@@ -10,6 +11,7 @@ import {
 
 import type { Route } from './+types/root';
 import { getServerConfig } from '@/config';
+import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
 import { previewContext } from '@/sanity/preview';
 import './app.css';
 
@@ -21,25 +23,23 @@ export async function loader({ request }: Route.LoaderArgs) {
     VITE_SANITY_DATASET: process.env.VITE_SANITY_DATASET,
     VITE_SANITY_API_VERSION: process.env.VITE_SANITY_API_VERSION,
     VITE_SANITY_STUDIO_URL: process.env.VITE_SANITY_STUDIO_URL,
+    VITE_SANITY_STUDIO_PREVIEW_ORIGIN:
+      process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN,
   };
 
   const config = getServerConfig();
 
-  return { preview, ENV, config };
+  return routeData(
+    { preview, ENV, config },
+    { headers: getDocumentCacheHeaders(preview) }
+  );
 }
 
-export const links: Route.LinksFunction = () => [
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-  {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
-  },
-  {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-  },
-];
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
+});
+
+export const links: Route.LinksFunction = () => [];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData('root');
@@ -55,13 +55,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <ScrollRestoration />
-        <Scripts />
         {/* dangerouslySetInnerHTML coming from guide https://www.sanity.io/docs/visual-editing/visual-editing-with-react-router */}
         <script
           dangerouslySetInnerHTML={{
             __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
           }}
         />
+        <Scripts />
       </body>
     </html>
   );

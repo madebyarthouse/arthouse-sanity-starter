@@ -1,4 +1,7 @@
-import type { CommonLabels, ValidationLabels } from '@/sanity/i18n/labels/schema';
+import type {
+  CommonLabels,
+  ValidationLabels,
+} from '@/sanity/i18n/labels/schema';
 
 export const common: CommonLabels = {
   untitled: 'Untitled',

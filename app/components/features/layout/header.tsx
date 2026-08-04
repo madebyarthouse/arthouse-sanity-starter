@@ -14,7 +14,10 @@ export function Header({ header, dataSanity }: HeaderProps) {
   }
 
   return (
-    <header className="border-border bg-background border-b" data-sanity={dataSanity}>
+    <header
+      className="border-border bg-background border-b"
+      data-sanity={dataSanity}
+    >
       <Container className="flex items-center justify-between py-6">
         <div className="flex items-center gap-8">
           {header.logo ? (

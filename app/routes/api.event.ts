@@ -2,10 +2,21 @@ import type { Route } from './+types/api.event';
 import type { ANALYTICS_QUERYResult } from '@gen/sanity';
 import { loadQuery } from '@/sanity/loader.server';
 import { ANALYTICS_QUERY } from '@/sanity/queries';
+import { noStoreCacheControl } from '@/lib/cache';
 
 export async function action({ request }: Route.ActionArgs) {
-  if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
-  if (process.env.NODE_ENV !== 'production') return new Response('OK', { status: 200 });
+  if (request.method !== 'POST') {
+    return new Response('Method not allowed', {
+      status: 405,
+      headers: { 'Cache-Control': noStoreCacheControl },
+    });
+  }
+  if (!import.meta.env.PROD && process.env.NODE_ENV !== 'production') {
+    return new Response('OK', {
+      status: 200,
+      headers: { 'Cache-Control': noStoreCacheControl },
+    });
+  }
 
   const { data } = await loadQuery<ANALYTICS_QUERYResult>(
     ANALYTICS_QUERY,
@@ -15,7 +26,10 @@ export async function action({ request }: Route.ActionArgs) {
 
   const plausible = data?.analytics?.plausible;
   if (!data?.analytics?.enabled || !plausible?.enabled) {
-    return new Response('OK', { status: 200 });
+    return new Response('OK', {
+      status: 200,
+      headers: { 'Cache-Control': noStoreCacheControl },
+    });
   }
 
   const url = new URL(request.url);
@@ -24,7 +38,10 @@ export async function action({ request }: Route.ActionArgs) {
     url.hostname === '127.0.0.1' ||
     url.hostname === '::1';
   if (isLocalhost) {
-    return new Response('OK', { status: 200 });
+    return new Response('OK', {
+      status: 200,
+      headers: { 'Cache-Control': noStoreCacheControl },
+    });
   }
 
   const clientIp =
@@ -55,6 +72,9 @@ export async function action({ request }: Route.ActionArgs) {
   const resBody = await res.text();
   return new Response(resBody, {
     status: res.status,
-    headers: { 'Content-Type': res.headers.get('content-type') ?? 'text/plain' },
+    headers: {
+      'Content-Type': res.headers.get('content-type') ?? 'text/plain',
+      'Cache-Control': noStoreCacheControl,
+    },
   });
 }

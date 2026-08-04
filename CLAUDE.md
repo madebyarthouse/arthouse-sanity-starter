@@ -22,15 +22,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Code Quality
 
-- `pnpm run format` - Run Prettier formatting
-- Run ESLint: `pnpm exec eslint .`
+- `pnpm run format` - Format with Biome
+- `pnpm run format:check` - Check formatting with Biome
+- `pnpm run lint` - Run Biome linting
+- `pnpm run check` - Run Biome formatting and lint checks
 - TypeScript compilation: `tsc --noEmit`
 
 ## Architecture
 
 ### Core Stack
 
-- **React Router v7** with server-side rendering enabled
+- **React Router v8** with server-side rendering enabled
 - **React 19** with modern patterns and hooks
 - **Sanity CMS** for headless content management
 - **Tailwind CSS v4** for utility-first styling
@@ -91,7 +93,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Key Patterns
 
-**React Router v7:**
+**React Router v8:**
 
 - File-based routing with TypeScript route types
 - Server-side rendering with data loaders
@@ -110,9 +112,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Performance & UX:**
 
 - Automatic code splitting and hydration
-- Font loading optimization (Inter via Google Fonts)
+- Local ABC Whyte Inktrap Book + Book Italic font loading
 - Tailwind CSS for utility-first styling
-- ESLint + Prettier for code quality
+- Biome for formatting and code quality
 
 ### Environment Setup
 

@@ -11,11 +11,10 @@ import { StudioLogo, studioTheme } from './app/sanity/studio/branding';
 function getPreviewOrigin(): string | undefined {
   // Sanity CLI / Node
   if (typeof process !== 'undefined' && process.env) {
-    return (
+    const value =
       process.env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ??
-      process.env.SANITY_STUDIO_PREVIEW_ORIGIN ??
-      undefined
-    );
+      process.env.SANITY_STUDIO_PREVIEW_ORIGIN;
+    if (value) return value;
   }
 
   // Embedded Studio (Vite)
@@ -23,7 +22,9 @@ function getPreviewOrigin(): string | undefined {
     const env = import.meta.env as unknown as {
       VITE_SANITY_STUDIO_PREVIEW_ORIGIN?: string;
     };
-    return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN ?? undefined;
+    if (env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN) {
+      return env.VITE_SANITY_STUDIO_PREVIEW_ORIGIN;
+    }
   }
 
   return undefined;
@@ -34,7 +35,7 @@ export default defineConfig({
   dataset: dataset!,
   apiVersion,
   name: 'default',
-  title: 'arthouse-sanity-starter',
+  title: 'Sanity Starter',
   icon: StudioLogo,
   theme: studioTheme,
   basePath: '/studio',

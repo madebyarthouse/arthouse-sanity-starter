@@ -11,6 +11,10 @@ type Props = {
   config: AnalyticsConfig | null | undefined;
 };
 
+type PostHogWithLoadState = typeof posthog & {
+  __loaded?: boolean;
+};
+
 export function PostHogGate({ config }: Props) {
   const { hasConsentFor } = useConsentManager();
 
@@ -34,7 +38,8 @@ export function PostHogGate({ config }: Props) {
     const projectKey = config.posthog.projectKey;
     if (!projectKey) return;
 
-    if ((posthog as any).__loaded) return;
+    const posthogWithState = posthog as PostHogWithLoadState;
+    if (posthogWithState.__loaded) return;
 
     posthog.init(projectKey, {
       api_host: config.posthog.proxyEnabled
@@ -44,7 +49,7 @@ export function PostHogGate({ config }: Props) {
       capture_pageview: true,
     });
 
-    (posthog as any).__loaded = true;
+    posthogWithState.__loaded = true;
   }, [config, hasConsentFor]);
 
   return null;

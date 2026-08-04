@@ -10,18 +10,9 @@ import type {
   HOMEPAGE_QUERYResult,
   PAGE_QUERYResult,
 } from '@gen/sanity';
-import {
-  ComplexImage,
-  type ComplexImageValue,
-} from '@/components/features/sanity/complex-image';
-import {
-  ExternalLink,
-  type ExternalLinkValue,
-} from '@/components/features/sanity/links/external-link';
-import {
-  InternalLink,
-  type InternalLinkValue,
-} from '@/components/features/sanity/links/internal-link';
+import { ComplexImage } from '@/components/features/sanity/complex-image';
+import { ExternalLink } from '@/components/features/sanity/links/external-link';
+import { InternalLink } from '@/components/features/sanity/links/internal-link';
 
 type PageRichText = NonNullable<NonNullable<PAGE_QUERYResult>['richText']>;
 type HomepageRichText = NonNullable<
@@ -49,7 +40,11 @@ type ChildrenProps = { children?: ReactNode };
 type MarkInternalLinkDeref = {
   _type: 'markInternalLink';
   _key?: string;
-  link?: { _id: string; _type: 'page'; slug: { current?: string | null } | null } | null;
+  link?: {
+    _id: string;
+    _type: 'page';
+    slug: { current?: string | null } | null;
+  } | null;
 };
 
 type MarkExternalLinkValue = NonNullable<
@@ -91,17 +86,13 @@ export function RichText({ value }: Props) {
         children,
         value,
       }: PortableTextMarkComponentProps<MarkExternalLinkValue>) => (
-        <ExternalLink value={value ?? null}>
-          {children}
-        </ExternalLink>
+        <ExternalLink value={value ?? null}>{children}</ExternalLink>
       ),
       markInternalLink: ({
         children,
         value,
       }: PortableTextMarkComponentProps<MarkInternalLinkDeref>) => (
-        <InternalLink value={value ?? null}>
-          {children}
-        </InternalLink>
+        <InternalLink value={value ?? null}>{children}</InternalLink>
       ),
       code: ({ children }: ChildrenProps) => (
         <code className="rounded bg-gray-100 px-1 py-0.5 text-sm">
@@ -112,9 +103,9 @@ export function RichText({ value }: Props) {
     types: {
       complexImage: ({
         value,
-      }: PortableTextTypeComponentProps<ComplexImageSchema & { _key?: string }>) => (
-        <ComplexImage value={value} />
-      ),
+      }: PortableTextTypeComponentProps<
+        ComplexImageSchema & { _key?: string }
+      >) => <ComplexImage value={value} />,
       separator: () => <hr className="my-8 border-gray-200" />,
     },
   };

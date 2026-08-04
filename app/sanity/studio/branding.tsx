@@ -5,15 +5,21 @@ import { buildLegacyTheme } from 'sanity';
  * Tweak these values to match client branding.
  */
 const brand = {
-  name: 'ART',
-  primary: '#2563eb',
-  black: '#111827',
-  white: '#ffffff',
+  name: 'Sanity Starter',
+  primary: '#11110f',
+  black: '#11110f',
+  white: '#f2eee6',
 };
 
 export function StudioLogo() {
   return (
-    <div style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
+    <div
+      style={{
+        fontFamily: 'ABC Whyte Inktrap, sans-serif',
+        fontWeight: 400,
+        letterSpacing: '-0.02em',
+      }}
+    >
       {brand.name}
     </div>
   );
@@ -22,12 +28,12 @@ export function StudioLogo() {
 export const studioTheme = buildLegacyTheme({
   '--black': brand.black,
   '--white': brand.white,
-  '--gray': '#6b7280',
-  '--gray-base': '#6b7280',
+  '--gray': '#6b6860',
+  '--gray-base': '#6b6860',
   '--component-bg': brand.white,
   '--component-text-color': brand.black,
   '--brand-primary': brand.primary,
-  '--default-button-color': '#6b7280',
+  '--default-button-color': brand.black,
   '--default-button-primary-color': brand.primary,
   '--default-button-success-color': '#16a34a',
   '--default-button-warning-color': '#ca8a04',

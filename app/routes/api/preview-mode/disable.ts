@@ -1,5 +1,6 @@
 import { redirect } from 'react-router';
 import { destroySession, getSession } from '@/sanity/preview';
+import { noStoreCacheControl } from '@/lib/cache';
 import type { Route } from './+types/disable';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -8,6 +9,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   return redirect('/', {
     headers: {
       'Set-Cookie': await destroySession(session),
+      'Cache-Control': noStoreCacheControl,
     },
   });
 };

@@ -3,10 +3,7 @@ import { Link } from 'react-router';
 import { resolveHref } from '@/components/features/sanity/helpers/resolve-href';
 import { ExternalLink } from '@/components/features/sanity/links/external-link';
 
-import type {
-  FOOTER_QUERYResult,
-  HEADER_QUERYResult,
-} from '@gen/sanity';
+import type { FOOTER_QUERYResult, HEADER_QUERYResult } from '@gen/sanity';
 
 type HeaderNavItem = NonNullable<
   NonNullable<HEADER_QUERYResult>['nav']

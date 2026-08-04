@@ -1,18 +1,20 @@
 import type { Route } from './+types/index';
 import type { HOMEPAGE_QUERYResult } from '@gen/sanity';
+import { data as routeData } from 'react-router';
 import { useQuery } from '@/sanity/loader';
 import { stegaClean } from '@sanity/client/stega';
 import { loadQuery } from '@/sanity/loader.server';
 import { previewContext } from '@/sanity/preview';
 import { HOMEPAGE_QUERY } from '@/sanity/queries';
 import { PageBuilder, RichText } from '@/components/features/sanity';
+import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
 
 function cleanVisibility(value: string | null | undefined) {
   return value ? stegaClean(value) : undefined;
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const { options } = await previewContext(request.headers);
+  const { options, preview } = await previewContext(request.headers);
   const data = await loadQuery<HOMEPAGE_QUERYResult | null>(
     HOMEPAGE_QUERY,
     {},
@@ -24,15 +26,23 @@ export async function loader({ request }: Route.LoaderArgs) {
     throw new Response('Not found', { status: 404 });
   }
 
-  return { data };
+  return routeData({ data }, { headers: getDocumentCacheHeaders(preview) });
 }
+
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
+});
 
 export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
   const homepage = loaderData.data.data;
   const visibility = cleanVisibility(homepage?.meta?.visibility);
 
   return [
-    { title: homepage?.title ? `${homepage.title} - Arthouse` : 'Arthouse' },
+    {
+      title: homepage?.title
+        ? `${homepage.title} - Sanity Starter`
+        : 'Sanity Starter',
+    },
     {
       name: 'description',
       content: homepage?.meta?.description || homepage?.title || 'Homepage',
@@ -69,7 +79,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
         <div className="text-foreground/70 py-12 text-center">
           <p className="text-lg">No homepage content found.</p>
           <p className="mt-2 text-sm">
-            Create the homepage in Sanity Studio (page with ID "homepage").
+            Create the homepage in Sanity Studio (page with ID
+            &quot;homepage&quot;).
           </p>
         </div>
       ) : (

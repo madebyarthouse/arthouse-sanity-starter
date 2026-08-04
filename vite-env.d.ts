@@ -5,7 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_SANITY_DATASET: string;
   readonly VITE_SANITY_API_VERSION: string;
   readonly VITE_SANITY_STUDIO_URL: string;
-  readonly SANITY_SESSION_SECRET: string;
+  readonly VITE_SANITY_STUDIO_PREVIEW_ORIGIN: string;
 }
 
 interface ImportMeta {
@@ -20,6 +20,7 @@ declare global {
       VITE_SANITY_DATASET: string;
       VITE_SANITY_API_VERSION: string;
       VITE_SANITY_STUDIO_URL: string;
+      VITE_SANITY_STUDIO_PREVIEW_ORIGIN: string;
     };
   }
 }

@@ -29,4 +29,6 @@
 - `pnpm sanity:dev`: standalone studio.
 - `pnpm sanity:types`: regenerate `sanity.types.ts`.
 - `pnpm typecheck`: runs typegen + `tsc --noEmit`.
-- `pnpm format`: prettier.
+- `pnpm format`: Biome formatting.
+- `pnpm format:check`: check Biome formatting.
+- `pnpm lint`: Biome linting.

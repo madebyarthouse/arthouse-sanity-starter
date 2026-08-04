@@ -1,7 +1,9 @@
 import { CookieBanner } from '@c15t/react';
 import type { SITE_SETTINGS_QUERYResult } from '@gen/sanity';
 
-type AnalyticsConfig = NonNullable<NonNullable<SITE_SETTINGS_QUERYResult>['analytics']>;
+type AnalyticsConfig = NonNullable<
+  NonNullable<SITE_SETTINGS_QUERYResult>['analytics']
+>;
 
 type Props = {
   config: AnalyticsConfig | null | undefined;

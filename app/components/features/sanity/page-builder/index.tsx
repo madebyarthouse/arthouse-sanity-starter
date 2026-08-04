@@ -1,7 +1,4 @@
-import type {
-  HOMEPAGE_QUERYResult,
-  PAGE_QUERYResult,
-} from '@gen/sanity';
+import type { HOMEPAGE_QUERYResult, PAGE_QUERYResult } from '@gen/sanity';
 import { RichText } from '@/components/features/sanity/rich-text';
 
 type PageComponents = NonNullable<NonNullable<PAGE_QUERYResult>['components']>;

@@ -6,7 +6,7 @@ import type {
   THEME_SETTINGS_QUERYResult,
 } from '@gen/sanity';
 import type { CSSProperties } from 'react';
-import { Outlet } from 'react-router';
+import { data as routeData, Outlet } from 'react-router';
 import { useQuery } from '@/sanity/loader';
 import { loadQuery } from '@/sanity/loader.server';
 import { previewContext } from '@/sanity/preview';
@@ -20,6 +20,7 @@ import { Header, Footer } from '@/components/features/layout';
 import { Container } from '@/components/ui';
 import { Hydrated, SanityVisualEditing } from '@/components/features/sanity';
 import { AnalyticsProvider } from '@/components/features/analytics';
+import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
 
 type ThemeCssVars =
   | '--color-background'
@@ -33,43 +34,70 @@ export async function loader({ request }: Route.LoaderArgs) {
     await Promise.all([
       loadQuery<HEADER_QUERYResult | null>(HEADER_QUERY, {}, options),
       loadQuery<FOOTER_QUERYResult | null>(FOOTER_QUERY, {}, options),
-      loadQuery<SITE_SETTINGS_QUERYResult | null>(SITE_SETTINGS_QUERY, {}, options),
+      loadQuery<SITE_SETTINGS_QUERYResult | null>(
+        SITE_SETTINGS_QUERY,
+        {},
+        options
+      ),
       loadQuery<THEME_SETTINGS_QUERYResult>(THEME_SETTINGS_QUERY, {}, options),
     ]);
 
-  return {
-    preview,
-    header: headerData,
-    footer: footerData,
-    siteSettings: siteSettingsData,
-    themeSettings: themeSettingsData,
-  };
+  return routeData(
+    {
+      preview,
+      header: headerData,
+      footer: footerData,
+      siteSettings: siteSettingsData,
+      themeSettings: themeSettingsData,
+    },
+    { headers: getDocumentCacheHeaders(preview) }
+  );
 }
+
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
+  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
+});
 
 export default function SiteLayout({ loaderData }: Route.ComponentProps) {
   const { data: header, encodeDataAttribute: encodeHeaderDataAttribute } =
-    useQuery<HEADER_QUERYResult | null>(HEADER_QUERY, {}, {
-      initial: loaderData.header,
-    });
+    useQuery<HEADER_QUERYResult | null>(
+      HEADER_QUERY,
+      {},
+      {
+        initial: loaderData.header,
+      }
+    );
 
   const { data: footer, encodeDataAttribute: encodeFooterDataAttribute } =
-    useQuery<FOOTER_QUERYResult | null>(FOOTER_QUERY, {}, {
-      initial: loaderData.footer,
-    });
+    useQuery<FOOTER_QUERYResult | null>(
+      FOOTER_QUERY,
+      {},
+      {
+        initial: loaderData.footer,
+      }
+    );
 
   const {
     data: _siteSettings,
     encodeDataAttribute: encodeSiteSettingsDataAttribute,
-  } = useQuery<SITE_SETTINGS_QUERYResult | null>(SITE_SETTINGS_QUERY, {}, {
-    initial: loaderData.siteSettings,
-  });
+  } = useQuery<SITE_SETTINGS_QUERYResult | null>(
+    SITE_SETTINGS_QUERY,
+    {},
+    {
+      initial: loaderData.siteSettings,
+    }
+  );
 
   const {
     data: themeSettings,
     encodeDataAttribute: encodeThemeSettingsDataAttribute,
-  } = useQuery<THEME_SETTINGS_QUERYResult>(THEME_SETTINGS_QUERY, {}, {
-    initial: loaderData.themeSettings,
-  });
+  } = useQuery<THEME_SETTINGS_QUERYResult>(
+    THEME_SETTINGS_QUERY,
+    {},
+    {
+      initial: loaderData.themeSettings,
+    }
+  );
 
   const headerSanity = encodeHeaderDataAttribute(['nav']);
   const footerSanity = encodeFooterDataAttribute(['mainNav']);

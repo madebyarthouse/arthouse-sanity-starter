@@ -14,7 +14,10 @@ export function Footer({ footer, dataSanity }: FooterProps) {
   }
 
   return (
-    <footer className="border-border bg-muted border-t" data-sanity={dataSanity}>
+    <footer
+      className="border-border bg-muted border-t"
+      data-sanity={dataSanity}
+    >
       <Container className="py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
