@@ -48,6 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     headers: {
       'Content-Type': 'application/javascript',
       'Cache-Control': 'public, max-age=86400',
+      'CDN-Cache-Control': 'public, max-age=86400',
     },
   });
 }

@@ -3,24 +3,26 @@
 React Router 8 + embedded Sanity Studio starter with a Cloudflare Workers
 deployment target.
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **React Router v8** - Full-stack React framework
-- **React 19** - Latest React features
-- **TypeScript** - Type safety and better DX
-- **Tailwind CSS v4** - Utility-first CSS framework
-- **Sanity CMS** - Headless content management system
-- **Vite** - Fast development and build tool
-- **Cloudflare Workers** - SSR runtime with Workers Cache
-- **Biome** - Code formatting and linting
-- **pnpm** - Fast package manager
+- **React Router v8** — full-stack React framework
+- **React 19** — latest React features
+- **TypeScript** — type safety and better DX
+- **Tailwind CSS v4** — utility-first CSS
+- **shadcn/ui** — `base-nova` primitives (`Button`, `cn()`)
+- **Sanity CMS** — headless content management
+- **Vite** — development and Worker build
+- **Cloudflare Workers** — SSR runtime with Workers Cache
+- **Biome** — formatting and linting
+- **Vitest** — unit tests (`pnpm test`)
+- **pnpm** — package manager (`pnpm@10.15.0`)
 
 ## Getting started
 
 ### Prerequisites
 
 - Node.js 22.22+
-- pnpm
+- pnpm 10.15.0 (`packageManager` in `package.json`)
 
 ### Setup
 
@@ -38,10 +40,8 @@ pnpm dev
 - `pnpm dev`: app + embedded studio
 - `pnpm sanity:dev`: standalone studio (optional)
 - `pnpm typecheck`: Wrangler, schema, Sanity, React Router typegen + `tsc`
-- `pnpm format`: Biome formatting
-- `pnpm format:check`: check Biome formatting
-- `pnpm lint`: Biome linting
-- `pnpm check`: Biome formatting and lint checks
+- `pnpm format` / `pnpm format:check` / `pnpm lint` / `pnpm check`: Biome
+- `pnpm test`: Vitest unit tests (`app/lib/cache.ts`, `cn()`, …)
 - `pnpm test:smoke`: offline Worker smoke tests for the homepage and Studio
 - `pnpm deploy`: production build and `wrangler deploy`
 - `pnpm preview`: build and run the Worker locally with Wrangler
@@ -52,7 +52,7 @@ pnpm dev
 ├── app/
 │   ├── routes/                         # React Router routes (registered in app/routes.ts)
 │   ├── components/
-│   │   ├── ui/                         # UI primitives
+│   │   ├── ui/                         # UI primitives (Container, shadcn Button)
 │   │   └── features/
 │   │       ├── layout/                 # header/footer
 │   │       ├── sanity/                 # schema-mapped UI + visual editing helpers
@@ -65,7 +65,15 @@ pnpm dev
 
 ## Styling
 
-Tailwind only. Global CSS is limited to Tailwind v4 `@theme` tokens + minimal base in `app/app.css`.
+Tailwind v4 + shadcn (`base-nova`). Global CSS in `app/app.css` holds `@theme`
+tokens, ABC Whyte `@font-face` from `static/fonts/`, and shadcn variables mapped
+onto the dark Arthouse palette. `--font-sans` stays ABC Whyte Inktrap.
+
+Add components with:
+
+```bash
+pnpm dlx shadcn@latest add <component>
+```
 
 ## Sanity
 
@@ -79,64 +87,23 @@ Analytics is Sanity-driven (`siteSettings.analytics`) and consent-gated via
 `@c15t/react`. Plausible and PostHog run through proxy routes (`/js/script`,
 `/api/event`, `/ingest/*`) and are disabled on localhost.
 
-## 🔧 Development
-
-### Code Quality
-
-- **Biome** - Configured for formatting and linting
-- **TypeScript** - Strict mode enabled for better type safety
-
-### React Router 8 Integration
-
-This starter leverages React Router 8's server-rendered route modules and typed
-loaders:
-
-**Server-Side Rendering (SSR):**
-
-- Data loading with `loader` functions
-- Automatic hydration and client-side navigation
-- SEO-friendly routing with meta tags
-
-**Route Organization:**
-
-- File-based routing in `app/routes/`
-- Dynamic routes (e.g., `house.$id.tsx`)
-- API routes for backend functionality
-
-**Type Safety:**
-
-- Auto-generated route types
-- Type-safe loaders and actions
-- Full TypeScript integration
-
-**Performance:**
-
-- Automatic code splitting
-- Optimized bundle sizes
-- Fast page transitions
-
 ## Environment
 
 See `.env.example` for the full list of required variables.
 
-## CI smoke tests
+## CI
 
-The GitHub Actions workflow runs `pnpm check` and `pnpm test:smoke` on every
-push and pull request. The smoke suite builds the Worker with a sample Sanity
-dataset fixture, verifies the homepage output, and checks that the configured
-Studio route renders without an SSR error.
+GitHub Actions runs on [Blacksmith](https://blacksmith.sh/) (`blacksmith-4vcpu-ubuntu-2204`):
+Biome `check`, `typecheck`, Vitest, Worker smoke tests, and production build
+on pull requests and pushes to `main`.
 
-## 🚢 Deployment
-
-Build the project for production:
+## Deployment
 
 ```bash
 pnpm run build
 ```
 
-The build artifacts will be stored in the `build/` directory.
-
-For Sanity Studio deployment:
+Build artifacts land in `build/`. Optional standalone Studio deploy:
 
 ```bash
 pnpm run sanity:deploy
@@ -144,22 +111,29 @@ pnpm run sanity:deploy
 
 ### Cloudflare
 
-Edit the non-secret target values in `wrangler.jsonc`. Do not put tokens or
-session secrets there. Copy `.dev.vars.example` to `.dev.vars` for local Worker
+Edit non-secret target values in `wrangler.jsonc`. Do not put tokens or session
+secrets there. Copy `.dev.vars.example` to `.dev.vars` for local Worker
 development, and set the same secrets in Cloudflare Variables & Secrets for a
-deployment. `nodejs_compat` is enabled because the starter reads server config
-through `process.env`.
+deployment.
 
-Workers Cache is enabled in Wrangler. Public document responses use a short
-60-second edge TTL with five-minute stale-while-revalidate; preview and proxy
-responses are `no-store`. Cache-tag purging is intentionally not claimed until
-a Cloudflare-specific revalidation adapter is added.
+`nodejs_compat` and `nodejs_compat_populate_process_env` are enabled so the
+starter can read server config through `process.env`.
 
-## 📚 Useful Links
+Workers Cache is enabled. Public document responses send **both**:
 
-- [React Router v8 Documentation](https://reactrouter.com)
-- [Sanity Documentation](https://www.sanity.io/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- `Cache-Control: public, max-age=0` (browsers always revalidate)
+- `CDN-Cache-Control: public, max-age=60, stale-while-revalidate=300` (Workers Cache)
+
+Preview, Studio, and analytics proxy responses are `no-store` on both headers.
+Helpers live in `app/lib/cache.ts`. Cache-tag purging is not claimed until a
+Cloudflare-specific revalidation adapter is added.
+
+## Useful links
+
+- [React Router v8](https://reactrouter.com)
+- [Sanity](https://www.sanity.io/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [shadcn/ui](https://ui.shadcn.com)
 
 ## License
 

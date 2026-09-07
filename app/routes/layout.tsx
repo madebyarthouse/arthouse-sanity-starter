@@ -20,9 +20,12 @@ import { Header, Footer } from '@/components/features/layout';
 import { Container } from '@/components/ui';
 import { Hydrated, SanityVisualEditing } from '@/components/features/sanity';
 import { AnalyticsProvider } from '@/components/features/analytics';
-import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
+import { getDocumentCacheHeaders, headersFromLoaderCache } from '@/lib/cache';
 
 type ThemeCssVars =
+  | '--background'
+  | '--foreground'
+  | '--primary'
   | '--color-background'
   | '--color-foreground'
   | '--color-brand';
@@ -54,9 +57,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   );
 }
 
-export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
-  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
-});
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) =>
+  headersFromLoaderCache(loaderHeaders);
 
 export default function SiteLayout({ loaderData }: Route.ComponentProps) {
   const { data: header, encodeDataAttribute: encodeHeaderDataAttribute } =
@@ -106,12 +108,15 @@ export default function SiteLayout({ loaderData }: Route.ComponentProps) {
 
   const themeStyle: CSSProperties & Partial<Record<ThemeCssVars, string>> = {};
   if (themeSettings?.backgroundColor) {
+    themeStyle['--background'] = themeSettings.backgroundColor;
     themeStyle['--color-background'] = themeSettings.backgroundColor;
   }
   if (themeSettings?.textColor) {
+    themeStyle['--foreground'] = themeSettings.textColor;
     themeStyle['--color-foreground'] = themeSettings.textColor;
   }
   if (themeSettings?.brandColor) {
+    themeStyle['--primary'] = themeSettings.brandColor;
     themeStyle['--color-brand'] = themeSettings.brandColor;
   }
 

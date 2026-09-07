@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
 
 type Props = {
   children?: ReactNode;
@@ -10,7 +10,7 @@ export function Container({ className, children, ...rest }: Props) {
   return (
     <div
       {...rest}
-      className={clsx(
+      className={cn(
         'mx-auto w-full max-w-screen-lg px-4 sm:px-6 lg:px-8',
         className
       )}

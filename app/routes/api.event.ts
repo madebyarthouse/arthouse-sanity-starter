@@ -2,19 +2,19 @@ import type { Route } from './+types/api.event';
 import type { ANALYTICS_QUERYResult } from '@gen/sanity';
 import { loadQuery } from '@/sanity/loader.server';
 import { ANALYTICS_QUERY } from '@/sanity/queries';
-import { noStoreCacheControl } from '@/lib/cache';
+import { getNoStoreCacheHeaders } from '@/lib/cache';
 
 export async function action({ request }: Route.ActionArgs) {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', {
       status: 405,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
   if (!import.meta.env.PROD && process.env.NODE_ENV !== 'production') {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -28,7 +28,7 @@ export async function action({ request }: Route.ActionArgs) {
   if (!data?.analytics?.enabled || !plausible?.enabled) {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -40,7 +40,7 @@ export async function action({ request }: Route.ActionArgs) {
   if (isLocalhost) {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -74,7 +74,7 @@ export async function action({ request }: Route.ActionArgs) {
     status: res.status,
     headers: {
       'Content-Type': res.headers.get('content-type') ?? 'text/plain',
-      'Cache-Control': noStoreCacheControl,
+      ...getNoStoreCacheHeaders(),
     },
   });
 }

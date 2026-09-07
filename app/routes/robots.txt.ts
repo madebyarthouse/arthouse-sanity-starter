@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from 'react-router';
 import { getServerConfig } from '@/config';
-import { publicPageCacheControl } from '@/lib/cache';
+import { getPublicDocumentCacheHeaders } from '@/lib/cache';
 
 function getBaseUrl(url: URL): string {
   if (process.env.SITE_URL || process.env.PRODUCTION_URL)
@@ -22,7 +22,7 @@ export async function loader({ url }: LoaderFunctionArgs) {
   return new Response(body, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': publicPageCacheControl,
+      ...getPublicDocumentCacheHeaders(),
     },
   });
 }

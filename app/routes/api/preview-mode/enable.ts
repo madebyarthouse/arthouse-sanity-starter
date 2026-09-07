@@ -2,7 +2,7 @@ import { redirect } from 'react-router';
 import { validatePreviewUrl } from '@sanity/preview-url-secret';
 import { client } from '@/lib/sanity';
 import { commitSession, getSession } from '@/sanity/preview';
-import { noStoreCacheControl } from '@/lib/cache';
+import { getNoStoreCacheHeaders } from '@/lib/cache';
 import type { Route } from './+types/enable';
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
@@ -35,7 +35,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   return redirect(redirectTo, {
     headers: {
       'Set-Cookie': await commitSession(session),
-      'Cache-Control': noStoreCacheControl,
+      ...getNoStoreCacheHeaders(),
     },
   });
 };

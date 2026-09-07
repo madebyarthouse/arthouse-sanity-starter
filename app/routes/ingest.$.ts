@@ -2,13 +2,13 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import type { ANALYTICS_QUERYResult } from '@gen/sanity';
 import { loadQuery } from '@/sanity/loader.server';
 import { ANALYTICS_QUERY } from '@/sanity/queries';
-import { noStoreCacheControl } from '@/lib/cache';
+import { getNoStoreCacheHeaders } from '@/lib/cache';
 
 async function proxy(request: Request, url: URL) {
   if (!import.meta.env.PROD && process.env.NODE_ENV !== 'production') {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -22,7 +22,7 @@ async function proxy(request: Request, url: URL) {
   if (!data?.analytics?.enabled || !posthog?.enabled) {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -33,7 +33,7 @@ async function proxy(request: Request, url: URL) {
   if (isLocalhost) {
     return new Response('OK', {
       status: 200,
-      headers: { 'Cache-Control': noStoreCacheControl },
+      headers: getNoStoreCacheHeaders(),
     });
   }
 
@@ -59,7 +59,9 @@ async function proxy(request: Request, url: URL) {
   });
 
   const resHeaders = new Headers(res.headers);
-  resHeaders.set('Cache-Control', noStoreCacheControl);
+  const noStore = getNoStoreCacheHeaders();
+  resHeaders.set('Cache-Control', noStore['Cache-Control']);
+  resHeaders.set('CDN-Cache-Control', noStore['CDN-Cache-Control']);
   return new Response(res.body, { status: res.status, headers: resHeaders });
 }
 

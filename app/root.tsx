@@ -11,7 +11,7 @@ import {
 
 import type { Route } from './+types/root';
 import { getServerConfig } from '@/config';
-import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
+import { getDocumentCacheHeaders, headersFromLoaderCache } from '@/lib/cache';
 import { previewContext } from '@/sanity/preview';
 import './app.css';
 
@@ -35,9 +35,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   );
 }
 
-export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
-  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
-});
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) =>
+  headersFromLoaderCache(loaderHeaders);
 
 export const links: Route.LinksFunction = () => [];
 
@@ -45,7 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const data = useRouteLoaderData('root');
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

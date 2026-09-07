@@ -7,7 +7,7 @@ import { loadQuery } from '@/sanity/loader.server';
 import { previewContext } from '@/sanity/preview';
 import { HOMEPAGE_QUERY } from '@/sanity/queries';
 import { PageBuilder, RichText } from '@/components/features/sanity';
-import { getDocumentCacheHeaders, publicPageCacheControl } from '@/lib/cache';
+import { getDocumentCacheHeaders, headersFromLoaderCache } from '@/lib/cache';
 
 function cleanVisibility(value: string | null | undefined) {
   return value ? stegaClean(value) : undefined;
@@ -29,9 +29,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   return routeData({ data }, { headers: getDocumentCacheHeaders(preview) });
 }
 
-export const headers: Route.HeadersFunction = ({ loaderHeaders }) => ({
-  'Cache-Control': loaderHeaders.get('Cache-Control') ?? publicPageCacheControl,
-});
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) =>
+  headersFromLoaderCache(loaderHeaders);
 
 export function meta({ loaderData }: Route.MetaArgs): Route.MetaDescriptors {
   const homepage = loaderData.data.data;

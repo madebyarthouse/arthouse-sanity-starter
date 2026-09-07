@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.7/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
   "files": {
     "includes": [
       "**",
@@ -11,7 +11,9 @@
       "!public",
       "!static/fonts",
       "!pnpm-lock.yaml",
-      "!worker-configuration.d.ts"
+      "!worker-configuration.d.ts",
+      "!sanity.types.ts",
+      "!app/sanity/schema.json"
     ]
   },
   "formatter": {
@@ -68,7 +70,7 @@
   },
   "overrides": [
     {
-      "includes": ["tests/**"],
+      "includes": ["tests/**/*.mjs"],
       "formatter": {
         "enabled": false
       },

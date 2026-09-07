@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import studio from '@/studio.css?url';
 
 import type { LinksFunction, MetaFunction } from 'react-router';
-import { noStoreCacheControl } from '@/lib/cache';
+import { getNoStoreCacheHeaders } from '@/lib/cache';
 
 export const meta: MetaFunction = () => [
   { title: 'Sanity Studio' },
@@ -13,9 +13,7 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: studio }];
 };
 
-export const headers = () => ({
-  'Cache-Control': noStoreCacheControl,
-});
+export const headers = () => getNoStoreCacheHeaders();
 
 const StudioApp = lazy(() =>
   import('@/components/studio-app.client').then((module) => ({

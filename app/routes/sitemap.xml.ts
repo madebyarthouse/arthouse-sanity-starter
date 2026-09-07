@@ -3,7 +3,7 @@ import type { SITEMAP_QUERYResult } from '@gen/sanity';
 import { getServerConfig } from '@/config';
 import { loadQuery } from '@/sanity/loader.server';
 import { SITEMAP_QUERY } from '@/sanity/queries';
-import { publicPageCacheControl } from '@/lib/cache';
+import { getPublicDocumentCacheHeaders } from '@/lib/cache';
 
 function getBaseUrl(url: URL): string {
   if (process.env.SITE_URL || process.env.PRODUCTION_URL)
@@ -57,7 +57,7 @@ export async function loader({ url }: LoaderFunctionArgs) {
   return new Response(xml, {
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': publicPageCacheControl,
+      ...getPublicDocumentCacheHeaders(),
     },
   });
 }

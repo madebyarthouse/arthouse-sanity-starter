@@ -2,8 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "arthouse-sanity-starter",
   "account_id": "2c9fb1653ddb6954dedcb6ece9f5affe",
-  "compatibility_date": "2026-08-04",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2026-09-07",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+  ],
   "main": "./workers/app.ts",
 
   // Workers Cache: MISS → HIT for responses that opt into public caching.
