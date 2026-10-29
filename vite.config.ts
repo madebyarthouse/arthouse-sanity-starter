@@ -1,3 +1,4 @@
+import { immutableAssets } from './scripts/immutable-assets';
 import { reactRouter } from '@react-router/dev/vite';
 import { cloudflare } from '@cloudflare/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
@@ -19,6 +20,7 @@ export default defineConfig(({ mode }) => {
     },
     publicDir: 'static',
     plugins: [
+      immutableAssets(),
       cloudflare({ viteEnvironment: { name: 'ssr' } }),
       tailwindcss(),
       reactRouter(),
